@@ -39,7 +39,6 @@ void printBoard(int board[Max_Size][Max_Size]) {
 	printf("\n");
 }
 
-
 /* Used for testing purposes, unnecessary now
 // Helper function for selectSqare
 int normalize(int coord, int bsize) {
@@ -189,6 +188,72 @@ void placeAllShips(int board[Max_Size][Max_Size], int bsize) {
 }
 
 
+//Fill the board with ships with defined positions (for now)
+void placeBoard2(int board2[Max_Size][Max_Size]) {
+	drawShip(board2, 5, 0, 0, true); //Aircraft carrier
+	drawShip(board2, 4, 0, 1, true); //Battleship
+	drawShip(board2, 3, 0, 2, true); //Cruiser
+	drawShip(board2, 3, 0, 3, true); //Submarine
+	drawShip(board2, 2, 0, 4, true); //Destroyer
+	printBoard(board2); //Delete later
+}
+
+
+bool checkPosition(int board[Max_Size][Max_Size], int x, int y) {
+	if(board[x][y] == 2) {
+		board[x][y]++; //Hit: 3
+		return true;
+	}
+	board[x][y]--; //Miss: 1
+	return false;
+}
+
+
+bool gameOver(int board[Max_Size][Max_Size], int bsize) {
+	for (int i = 0; i < bsize; i++) {
+		for (int j = 0; j < bsize; j++) {
+			if(board[i][j] == 2) return false; //Check if all ships have been completely destroyed
+		}
+	}
+	return true;
+}
+
+
+void game(int board[Max_Size][Max_Size], int board2[Max_Size][Max_Size], int bsize) {
+	int x;
+	int y;
+	bool playable = 1;
+	int turn = 1;
+
+	//Player
+	if (turn == 1) {
+		while (playable == 1) {
+			printBoard(board2); //Delete later
+			//Get user inputs (Might make this process interactive)
+			printf("Please place your target's row:\n");
+			scanf("%d", &x);
+			printf("Please place your target's column:\n");
+			scanf("%d", &y);
+			if (x > bsize || y > bsize) printf("Out of bound inputs");
+			playable = checkPosition(board2, x, y); //Play until target missed
+		}
+		if (gameOver(board2, bsize) == false) turn = 2;
+	}
+
+	//AI opponent
+	else if (turn == 2) {
+		while (playable == 1) {
+			printBoard(board); 
+			//Random target (for now)
+			x = (rand() % bsize) + 1;
+			y = (rand() % bsize) + 1;
+			playable = checkPosition(board, x, y); //Play until target missed
+		}
+		if (gameOver(board, bsize) == false) turn = 1;
+	}
+}
+
+
 int main(void) {
 	int bsize;  // Board size (board is always square)
 	printf("Input board size between 0 and %d (board will be a square)\n", Max_Size);
@@ -197,9 +262,12 @@ int main(void) {
 	assert(bsize >= 5 && bsize <= Max_Size);
 	// Board is array with size Max_Size, values outside bsize are -1, this is to avoid variable sized arrays
 	int board[Max_Size][Max_Size];
+	int board2[Max_Size][Max_Size]; //Second set of board
 	generateEmptyBoard(board, bsize);
-	//printBoard(board);
+	generateEmptyBoard(board2, bsize); //Second set of board
 	//selectSquare(board, bsize);
 	placeAllShips(board, bsize);
+	placeBoard2(board2); //Fill the second set of board
+	game(board, board2, bsize); //Main game function
 	return 0;
 }
