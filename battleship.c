@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 // LED board used is 16*32 px so max board size is 16*16
 #define Max_Size 16
@@ -256,7 +257,7 @@ void game(int board[Max_Size][Max_Size], int board2[Max_Size][Max_Size], int bsi
 
 int main(void) {
 	int bsize;  // Board size (board is always square)
-	printf("Input board size between 0 and %d (board will be a square)\n", Max_Size);
+	printf("Input board width between 5 and %d (board will be a square)\n", Max_Size);
 	scanf("%d", &bsize);
 	// Board size must be at least 5 to fit aircraft carrier and less than Max_Size to fit on LED board
 	assert(bsize >= 5 && bsize <= Max_Size);
