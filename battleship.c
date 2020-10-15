@@ -192,10 +192,10 @@ void placeAllShips(int board[Max_Size][Max_Size], int bsize) {
 //Fill the board with ships with defined positions (for now)
 void placeBoard2(int board2[Max_Size][Max_Size]) {
 	drawShip(board2, 5, 0, 0, true); //Aircraft carrier
-	drawShip(board2, 4, 0, 1, true); //Battleship
-	drawShip(board2, 3, 0, 2, true); //Cruiser
-	drawShip(board2, 3, 0, 3, true); //Submarine
-	drawShip(board2, 2, 0, 4, true); //Destroyer
+	drawShip(board2, 4, 1, 0, true); //Battleship
+	drawShip(board2, 3, 2, 0, true); //Cruiser
+	drawShip(board2, 3, 3, 0, true); //Submarine
+	drawShip(board2, 2, 4, 0, true); //Destroyer
 	printBoard(board2); //Delete later
 }
 
