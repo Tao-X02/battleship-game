@@ -201,11 +201,11 @@ void placeBoard2(int board2[Max_Size][Max_Size]) {
 
 
 bool checkPosition(int board[Max_Size][Max_Size], int x, int y) {
-	if(board[x][y] == 2) {
-		board[x][y]++; //Hit: 3
+	if(board[x-1][y-1] == 2) {
+		board[x-1][y-1]++; //Hit: 3
 		return true;
 	}
-	board[x][y]--; //Miss: 1
+	board[x-1][y-1]--; //Miss: 1
 	return false;
 }
 
@@ -226,31 +226,43 @@ void game(int board[Max_Size][Max_Size], int board2[Max_Size][Max_Size], int bsi
 	bool playable = 1;
 	int turn = 1;
 
-	//Player
-	if (turn == 1) {
-		while (playable == 1) {
-			printBoard(board2); //Delete later
-			//Get user inputs (Might make this process interactive)
-			printf("Please place your target's row:\n");
-			scanf("%d", &x);
-			printf("Please place your target's column:\n");
-			scanf("%d", &y);
-			if (x > bsize || y > bsize) printf("Out of bound inputs");
-			playable = checkPosition(board2, x, y); //Play until target missed
+	while(1) {
+		//Player
+		if (turn == 1) {
+			while (playable == 1) {
+				printBoard(board2); //Delete later
+				//Get user inputs (Might make this process interactive)
+				printf("Please place your target's row:\n");
+				scanf("%d", &x);
+				printf("Please place your target's column:\n");
+				scanf("%d", &y);
+				if (x > bsize || y > bsize) printf("Out of bound inputs");
+				playable = checkPosition(board2, x, y); //Play until target missed
+			}
+			if (gameOver(board2, bsize) == false) {
+				turn = 2;
+			}
+			else {
+				break;
+			}
 		}
-		if (gameOver(board2, bsize) == false) turn = 2;
-	}
 
-	//AI opponent
-	else if (turn == 2) {
-		while (playable == 1) {
-			printBoard(board); 
-			//Random target (for now)
-			x = (rand() % bsize) + 1;
-			y = (rand() % bsize) + 1;
-			playable = checkPosition(board, x, y); //Play until target missed
+		//AI opponent
+		else if (turn == 2) {
+			while (playable == 1) {
+				printBoard(board); 
+				//Random target (for now)
+				x = (rand() % bsize) + 1;
+				y = (rand() % bsize) + 1;
+				playable = checkPosition(board, x, y); //Play until target missed
+			}
+			if (gameOver(board, bsize) == false) {
+				turn = 1;
+			}
+			else {
+				break;
+			}
 		}
-		if (gameOver(board, bsize) == false) turn = 1;
 	}
 }
 
