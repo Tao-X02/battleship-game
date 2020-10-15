@@ -88,7 +88,7 @@ void selectSquare(int board[Max_Size][Max_Size], int bsize) {
 
 // Helper function for placeShip, draws ship on board
 void drawShip(int board[Max_Size][Max_Size], int shipSize, int x, int y, bool isVertical) {
-	for(i=0; i<shipSize; i++) {
+	for(int i=0; i<shipSize; i++) {
 		if(isVertical) board[y+i][x] += 2;
 		else board[y][x+i] += 2;
 	}
@@ -98,15 +98,15 @@ void drawShip(int board[Max_Size][Max_Size], int shipSize, int x, int y, bool is
 // Checks to see if current ship position overlaps with other ships (used in placeShip)
 bool isOverlap(int board[Max_Size][Max_Size]) {
 	for(int i=0; i<Max_Size*Max_Size; i++)
-		if(board[i] == 4) return true;
+		if(board[0][i] == 4) return true;
 	return false;
 }
 
 
 // Helper function for placeShip, avoids ships going out of bounds
 int normalize(int coord, int bsize, int shipSize) {
-	if(coord < 0) return bsize - shipSize - 1;  // If coord too small, shifts to largest possible coord
-	else if(coord + shipSize >= bsize) return 0;  // If coord too large, shifts smallest possible coord
+	if(coord < 0) return bsize - shipSize;  // If coord too small, shifts to largest possible coord
+	else if(coord + shipSize > bsize) return 0;  // If coord too large, shifts smallest possible coord
 	else return coord;  // If not out of bounds, simply returns coordinate
 }
 
@@ -119,7 +119,7 @@ void placeShip(int board[Max_Size][Max_Size], int bsize, int shipSize) {
 	while(1) {
 		// Creates tempBoard, a copy of board
 		int tempBoard[Max_Size][Max_Size];
-		for(int i=0; i<Max_Size*Max_Size; i++) tempBoard[i] = board[i];
+		for(int i=0; i<Max_Size*Max_Size; i++) tempBoard[0][i] = board[0][i];
 
 		// Draws ship in current position on tempBoard and displays tempBoard
 		drawShip(tempBoard, shipSize, x, y, isVertical);
@@ -163,12 +163,12 @@ void placeShip(int board[Max_Size][Max_Size], int bsize, int shipSize) {
 
 		// Make sure ship is within bounds of the board
 		if(isVertical) {
-			x = normalize(x, bsize, 0);
+			x = normalize(x, bsize, 1);  // shipSize=1 for axis that isn't in ship's direction
 			y = normalize(y, bsize, shipSize);
 		}
 		else {
 			x = normalize(x, bsize, shipSize);
-			y = normalize(y, bsize, 0);
+			y = normalize(y, bsize, 1);
 		}
 	}
 }
@@ -177,15 +177,15 @@ void placeShip(int board[Max_Size][Max_Size], int bsize, int shipSize) {
 void placeAllShips(int board[Max_Size][Max_Size], int bsize) {
 	printf("Place your ships:\n");
 	printf("Place your aircraft carrier (5 squares long)\n");
-	placeShip(board[Max_Size][Max_Size], bsize, 5);
+	placeShip(board, bsize, 5);
 	printf("Place your battleship (4 squares long)\n");
-	placeShip(board[Max_Size][Max_Size], bsize, 4);
+	placeShip(board, bsize, 4);
 	printf("Place your cruiser (3 squares long)\n");
-	placeShip(board[Max_Size][Max_Size], bsize, 3);
+	placeShip(board, bsize, 3);
 	printf("Place your submarine (3 squares long)\n");
-	placeShip(board[Max_Size][Max_Size], bsize, 3);
+	placeShip(board, bsize, 3);
 	printf("Place your destroyer (2 squares long)\n");
-	placeShip(board[Max_Size][Max_Size], bsize, 2);
+	placeShip(board, bsize, 2);
 }
 
 
@@ -199,6 +199,7 @@ int main(void) {
 	int board[Max_Size][Max_Size];
 	generateEmptyBoard(board, bsize);
 	//printBoard(board);
-	selectSquare(board, bsize);
+	//selectSquare(board, bsize);
+	placeAllShips(board, bsize);
 	return 0;
 }
