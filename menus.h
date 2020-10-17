@@ -9,7 +9,7 @@ and the printing the words on the LCD
 
 /*MENU LAYOUT*/
 
-void mainmenu();
+void mainmenu();//done
  void battleship();
   //two player
   //against AI
@@ -19,6 +19,12 @@ void mainmenu();
  void settings();
  void help();//how to play
 
-void exitbutton();
+/*BUTTONS*/
+void exiticon(int x, int y);
+void helpicon(int x, int y);
+void settingsicon(int x, int y);
+void playicon(int x, int y);
+void pvpicon(int x, int y);
+void pvcicon(int x, int y);
 
 #endif
