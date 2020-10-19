@@ -28,7 +28,7 @@ void generateEmptyBoard(int board[Max_Size][Max_Size], int size) {
 
 // Prints board in terminal
 void printBoard(int board[Max_Size][Max_Size]) {
-	printf("Printing current board:\n");
+	//printf("Printing current board:\n");
 	for(int i=0; i<Max_Size; i++) {
 		if(board[i][0] < 0) break;  // Ends loop if outside bounds of board
                 for(int j=0; j<Max_Size; j++) {
@@ -123,6 +123,7 @@ void placeShip(int board[Max_Size][Max_Size], int bsize, int shipSize) {
 
 		// Draws ship in current position on tempBoard and displays tempBoard
 		drawShip(tempBoard, shipSize, x, y, isVertical);
+		printf("Printing current board:\n");
 		printBoard(tempBoard);
 
 		// Get user input
@@ -205,7 +206,7 @@ bool checkPosition(int board[Max_Size][Max_Size], int x, int y) {
 		board[x-1][y-1]++; //Hit: 3
 		return true;
 	}
-	board[x-1][y-1]--; //Miss: 1
+	board[x-1][y-1] = 1; //Miss: 1
 	return false;
 }
 
@@ -223,13 +224,15 @@ bool gameOver(int board[Max_Size][Max_Size], int bsize) {
 void game(int board[Max_Size][Max_Size], int board2[Max_Size][Max_Size], int bsize) {
 	int x;
 	int y;
-	bool playable = 1;
+	bool playable = true;
+	bool over = false;
 	int turn = 1;
 
-	while(1) {
+	while(over == false) {
 		//Player
 		if (turn == 1) {
-			while (playable == 1) {
+			while (playable == true) {
+				printf("Your opponent's board:\n");
 				printBoard(board2); //Delete later
 				//Get user inputs (Might make this process interactive)
 				printf("Please place your target's row:\n");
@@ -241,26 +244,28 @@ void game(int board[Max_Size][Max_Size], int board2[Max_Size][Max_Size], int bsi
 			}
 			if (gameOver(board2, bsize) == false) {
 				turn = 2;
-			}
-			else {
-				break;
+				playable = true;
+			} else {
+				over = true;
 			}
 		}
 
 		//AI opponent
 		else if (turn == 2) {
-			while (playable == 1) {
-				printBoard(board); 
+			while (playable == true) {
 				//Random target (for now)
-				x = (rand() % bsize) + 1;
-				y = (rand() % bsize) + 1;
+				x = rand() % bsize + 1;
+				y = rand() % bsize + 1;
+				printf("Computer input: x=%d, y=%d\n", x, y);
 				playable = checkPosition(board, x, y); //Play until target missed
+				printf("Your current board:\n");
+				printBoard(board); 
 			}
 			if (gameOver(board, bsize) == false) {
 				turn = 1;
-			}
-			else {
-				break;
+				playable = true;
+			} else {
+				over = true;
 			}
 		}
 	}
