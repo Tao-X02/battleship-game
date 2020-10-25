@@ -262,23 +262,11 @@ void choosePlacement(int placements[Max_Size][Max_Size], int location[3], int bo
 void placeRandomShipsAI(int board[Max_Size][Max_Size], int boardSize) {
 	for (int i = 5; i > 1; i--)
 	{
-		printf("%d\n", i);
 		int placements[Max_Size][Max_Size];
 		findAllValidPlacements(board, i, boardSize, placements);
 		int location[3];
 		choosePlacement(placements, location, boardSize);
-		printf("%d, %d, %d\n", location[0], location[1], location[2]);
 		drawShip(board, i, location[0], location[1], location[2]);
-		for (int i = 0; i < boardSize; i++)
-		{
-			for (int j = 0; j < boardSize; j++)
-			{
-				printf("%d ", placements[j][i]);
-			}
-			printf("\n");
-			
-		}
-		printf("\n");
 	}
 	printBoard(board);
 }
@@ -375,15 +363,16 @@ int main(void) {
 	int board[Max_Size][Max_Size];
 	int board2[Max_Size][Max_Size]; //Second set of board
 	
-	int testBoard[Max_Size][Max_Size]; //Board for testing random ship placement
-	generateEmptyBoard(testBoard, bsize);
-	placeRandomShipsAI(testBoard, bsize);
+	// int testBoard[Max_Size][Max_Size]; //Board for testing random ship placement
+	// generateEmptyBoard(testBoard, bsize);
+	// placeRandomShipsAI(testBoard, bsize);
 	
 	generateEmptyBoard(board, bsize);
 	generateEmptyBoard(board2, bsize); //Second set of board
 	//selectSquare(board, bsize);
 	placeAllShips(board, bsize);
-	placeBoard2(board2); //Fill the second set of board
+	// placeBoard2(board2); //Fill the second set of board
+	placeRandomShipsAI(board2, bsize);
 	game(board, board2, bsize); //Main game function
 	return 0;
 }
