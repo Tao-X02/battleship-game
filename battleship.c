@@ -189,6 +189,99 @@ void placeAllShips(int board[Max_Size][Max_Size], int bsize) {
 	placeShip(board, bsize, 2);
 }
 
+//Returns list of valid ship placement coordinates
+void findAllValidPlacements(int board[Max_Size][Max_Size], int shipSize, int boardSize, int placements[Max_Size][Max_Size]) {
+	for (int x = 0; x < boardSize; x++) {
+		for (int y = 0; y < boardSize; y++) {
+			int horizontal = 1; //boolean value, 1 if horizontal placement is valid at coordinate
+			//check horizontal
+			for (int s = 0; s < shipSize; s++) {
+				if (x+s < boardSize) {
+					if (board[y][x+s] == 2) {
+						horizontal = 0;
+						break;
+					}
+				} else {
+					horizontal = 0;
+					break;
+				}
+				
+			}
+
+			int vertical = 2; //boolean value, 2 if vertical placement is valid at coordinate
+			//check horizontal
+			for (int s = 0; s < shipSize; s++) {
+				if (y+s < boardSize) {
+					if (board[y+s][x] == 2) {
+						vertical = 0;
+						break;
+					}
+				} else {
+					vertical = 0;
+					break;
+				}
+			}
+			placements[x][y] = horizontal + vertical;
+			
+		}
+	}
+}
+
+//chooses random place for ship given a list of valid placements
+//sets the value of list location[3]
+//location[3] has the form {x,y,r}, where r is a boolean for whether the ship is vertical or not
+void choosePlacement(int placements[Max_Size][Max_Size], int location[3], int boardSize) {
+	int validInd[Max_Size*Max_Size][3];
+	int numOfValidInd = 0;
+	for (int i = 0; i < boardSize; i++)
+	{
+		for (int j = 0; j < boardSize; j++)
+		{
+			if (placements[i][j] != 0)
+			{
+				validInd[numOfValidInd][0] = i;
+				validInd[numOfValidInd][1] = j;
+				if (placements[i][j] == 3) {
+					validInd[numOfValidInd][2] = rand() % 2;
+				} else if (placements[i][j] == 2) {
+					validInd[numOfValidInd][2] = 1;
+				} else {
+					validInd[numOfValidInd][2] = 0;
+				}
+				numOfValidInd++;
+			}
+		}
+	}
+	int index = rand() % (numOfValidInd + 1);
+	location[0] = validInd[index][0];
+	location[1] = validInd[index][1];
+	location[2] = validInd[index][2];
+}
+
+//Place ships in random positions on the AI board
+void placeRandomShipsAI(int board[Max_Size][Max_Size], int boardSize) {
+	for (int i = 5; i > 1; i--)
+	{
+		printf("%d\n", i);
+		int placements[Max_Size][Max_Size];
+		findAllValidPlacements(board, i, boardSize, placements);
+		int location[3];
+		choosePlacement(placements, location, boardSize);
+		printf("%d, %d, %d\n", location[0], location[1], location[2]);
+		drawShip(board, i, location[0], location[1], location[2]);
+		for (int i = 0; i < boardSize; i++)
+		{
+			for (int j = 0; j < boardSize; j++)
+			{
+				printf("%d ", placements[j][i]);
+			}
+			printf("\n");
+			
+		}
+		printf("\n");
+	}
+	printBoard(board);
+}
 
 //Fill the board with ships with defined positions (for now)
 void placeBoard2(int board2[Max_Size][Max_Size]) {
@@ -281,6 +374,11 @@ int main(void) {
 	// Board is array with size Max_Size, values outside bsize are -1, this is to avoid variable sized arrays
 	int board[Max_Size][Max_Size];
 	int board2[Max_Size][Max_Size]; //Second set of board
+	
+	int testBoard[Max_Size][Max_Size]; //Board for testing random ship placement
+	generateEmptyBoard(testBoard, bsize);
+	placeRandomShipsAI(testBoard, bsize);
+	
 	generateEmptyBoard(board, bsize);
 	generateEmptyBoard(board2, bsize); //Second set of board
 	//selectSquare(board, bsize);
