@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <time.h>
 
 // LED board used is 16*32 px so max board size is 16*16
 #define Max_Size 16
@@ -355,6 +356,7 @@ void game(int board[Max_Size][Max_Size], int board2[Max_Size][Max_Size], int bsi
 
 
 int main(void) {
+	srand( time(NULL) ); //seed random with time. Otherwise the sequences are always the same
 	int bsize;  // Board size (board is always square)
 	printf("Input board width between 5 and %d (board will be a square)\n", Max_Size);
 	scanf("%d", &bsize);
