@@ -260,7 +260,7 @@ void choosePlacement(int placements[Max_Size][Max_Size], int location[3], int bo
 
 //Place ships in random positions on the AI board
 void placeRandomShipsAI(int board[Max_Size][Max_Size], int boardSize) {
-	int ships[] = {2,3,3,4,5};
+	int ships[] = {5,4,3,3,2};
 	for (int i = 0; i < 5; i++)
 	{
 		int placements[Max_Size][Max_Size];
