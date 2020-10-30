@@ -33,7 +33,35 @@ void printBoard(int board[Max_Size][Max_Size]) {
 		if(board[i][0] < 0) break;  // Ends loop if outside bounds of board
                 for(int j=0; j<Max_Size; j++) {
 			if(board[i][j] < 0) break;  // Moves to next line if outside bounds of board
+			if (board[i][j] == 1)
+			{
+				printf("%d ", 0);
+			}
+			else
+			{
 			printf("%d ", board[i][j]);
+			}
+		}
+                printf("\n");
+        }
+	printf("\n");
+}
+
+//prints a board that only shows hit or miss targets
+void printOpponentBoard(int board[Max_Size][Max_Size]) {
+	//printf("Printing current board:\n");
+	for(int i=0; i<Max_Size; i++) {
+		if(board[i][0] < 0) break;  // Ends loop if outside bounds of board
+                for(int j=0; j<Max_Size; j++) {
+			if(board[i][j] < 0) break;  // Moves to next line if outside bounds of board
+			if ((board[i][j]!= 1) && (board[i][j]!= 3))
+			{
+				printf("%d ", 0);
+			}
+			else
+			{
+				printf("%d ", board[i][j]);
+			}
 		}
                 printf("\n");
         }
@@ -287,8 +315,11 @@ bool checkPosition(int board[Max_Size][Max_Size], int x, int y) {
 		board[x-1][y-1]++; //Hit: 3
 		return true;
 	}
-	board[x-1][y-1] = 1; //Miss: 1
-	return false;
+	else 
+	{ 	
+		board[x-1][y-1] =1;
+		return false; //Miss: 1
+	}
 }
 
 
@@ -302,7 +333,7 @@ bool gameOver(int board[Max_Size][Max_Size], int bsize) {
 }
 
 
-void game(int board[Max_Size][Max_Size], int board2[Max_Size][Max_Size], int bsize) {
+void gameAI(int board1[Max_Size][Max_Size], int board2[Max_Size][Max_Size], int bsize) {
 	int x;
 	int y;
 	bool playable = true;
@@ -314,7 +345,8 @@ void game(int board[Max_Size][Max_Size], int board2[Max_Size][Max_Size], int bsi
 		if (turn == 1) {
 			while (playable == true) {
 				printf("Your opponent's board:\n");
-				printBoard(board2); //Delete later
+				printOpponentBoard(board2); //Delete later
+				
 				//Get user inputs (Might make this process interactive)
 				printf("Please place your target's row:\n");
 				scanf("%d", &x);
@@ -338,11 +370,11 @@ void game(int board[Max_Size][Max_Size], int board2[Max_Size][Max_Size], int bsi
 				x = rand() % bsize + 1;
 				y = rand() % bsize + 1;
 				printf("Computer input: x=%d, y=%d\n", x, y);
-				playable = checkPosition(board, x, y); //Play until target missed
+				playable = checkPosition(board1, x, y); //Play until target missed
 				printf("Your current board:\n");
-				printBoard(board); 
+				printBoard(board1); 
 			}
-			if (gameOver(board, bsize) == false) {
+			if (gameOver(board1, bsize) == false) {
 				turn = 1;
 				playable = true;
 			} else {
@@ -373,6 +405,6 @@ int main(void) {
 	placeAllShips(board, bsize);
 	// placeBoard2(board2); //Fill the second set of board
 	placeRandomShipsAI(board2, bsize);
-	game(board, board2, bsize); //Main game function
+	gameAI(board, board2, bsize); //Main game function
 	return 0;
 }
