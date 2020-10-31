@@ -298,7 +298,7 @@ void placeRandomShipsAI(int board[Max_Size][Max_Size], int boardSize) {
 		choosePlacement(placements, location, boardSize);
 		drawShip(board, ships[i], location[0], location[1], location[2]);
 	}
-	printBoard(board);
+	//printBoard(board);
 }
 
 //Fill the board with ships with defined positions (for now)
