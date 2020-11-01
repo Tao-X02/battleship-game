@@ -29,90 +29,31 @@ void generateEmptyBoard(int board[Max_Size][Max_Size], int size) {
 
 // Prints board in terminal
 void printBoard(int board[Max_Size][Max_Size]) {
-	//printf("Printing current board:\n");
 	for(int i=0; i<Max_Size; i++) {
 		if(board[i][0] < 0) break;  // Ends loop if outside bounds of board
-                for(int j=0; j<Max_Size; j++) {
+    for(int j=0; j<Max_Size; j++) {
 			if(board[i][j] < 0) break;  // Moves to next line if outside bounds of board
-			if (board[i][j] == 1)
-			{
-				printf("%d ", 0);
-			}
-			else
-			{
-			printf("%d ", board[i][j]);
-			}
+			if (board[i][j] == 1) printf("%d ", 0);  // Displays enemy's misses as ocean
+			else printf("%d ", board[i][j]);
 		}
-                printf("\n");
-        }
+    printf("\n");
+  }
 	printf("\n");
 }
 
-//prints a board that only shows hit or miss targets
+// Prints a board that only shows hit or miss targets
 void printOpponentBoard(int board[Max_Size][Max_Size]) {
-	//printf("Printing current board:\n");
 	for(int i=0; i<Max_Size; i++) {
 		if(board[i][0] < 0) break;  // Ends loop if outside bounds of board
-                for(int j=0; j<Max_Size; j++) {
+    for(int j=0; j<Max_Size; j++) {
 			if(board[i][j] < 0) break;  // Moves to next line if outside bounds of board
-			if ((board[i][j]!= 1) && (board[i][j]!= 3))
-			{
-				printf("%d ", 0);
-			}
-			else
-			{
-				printf("%d ", board[i][j]);
-			}
+			if ((board[i][j]!= 1) && (board[i][j]!= 3)) printf("%d ", 0);  // Prints everything other than hit or miss as ocean
+			else printf("%d ", board[i][j]);
 		}
-                printf("\n");
-        }
+    printf("\n");
+  }
 	printf("\n");
 }
-
-/* Used for testing purposes, unnecessary now
-// Helper function for selectSqare
-int normalize(int coord, int bsize) {
-	if(coord < 0) return --bsize;
-	else if(coord >= bsize) return 0;
-	else return coord;
-}
-
-
-void selectSquare(int board[Max_Size][Max_Size], int bsize) {
-	int x = 0;  // Corresponds to column
-	int y = 0;  // Corresponds to row
-	while(1) {
-		board[y][x] = 1;  // 1 marks where the cursor is
-		printBoard(board);
-		board[y][x] = 0;  // Removes cursor (until next iteration in loop)
-		printf("Use WASD to select a square (one lowercase character at a time). ");
-		printf("Enter 'x' to choose the current square.\n");
-		char input;
-		scanf("%c", &input);
-		switch(input) {
-			case 'w':
-				y--;
-				break;
-			case 's':
-				y++;
-				break;
-			case 'a':
-				x--;
-				break;
-			case 'd':
-				x++;
-				break;
-			case 'x':
-				return;
-			default:
-				printf("Invalid input\n");
-		}
-		//Next 2 lines ensure x and y stay within bounds of the board
-		x = normalize(x, bsize);
-		y = normalize(y, bsize);
-	}
-}
-*/
 
 
 // Helper function for placeShip, draws ship on board
@@ -234,7 +175,7 @@ void findAllValidPlacements(int board[Max_Size][Max_Size], int shipSize, int boa
 					horizontal = 0;
 					break;
 				}
-				
+
 			}
 
 			int vertical = 2; //boolean value, 2 if vertical placement is valid at coordinate
@@ -251,7 +192,7 @@ void findAllValidPlacements(int board[Max_Size][Max_Size], int shipSize, int boa
 				}
 			}
 			placements[x][y] = horizontal + vertical;
-			
+
 		}
 	}
 }
@@ -298,7 +239,6 @@ void placeRandomShipsAI(int board[Max_Size][Max_Size], int boardSize) {
 		choosePlacement(placements, location, boardSize);
 		drawShip(board, ships[i], location[0], location[1], location[2]);
 	}
-	printBoard(board);
 }
 
 //Fill the board with ships with defined positions (for now)
@@ -317,8 +257,8 @@ bool checkPosition(int board[Max_Size][Max_Size], int x, int y) {
 		board[x-1][y-1]++; //Hit: 3
 		return true;
 	}
-	else 
-	{ 	
+	else
+	{
 		board[x-1][y-1] =1;
 		return false; //Miss: 1
 	}
@@ -354,7 +294,7 @@ void gameAI(int board1[Max_Size][Max_Size], int board2[Max_Size][Max_Size], int 
 				scanf("%d", &x);
 				printf("Please place your target's column:\n");
 				scanf("%d", &y);
-				if (x > bsize || y > bsize) printf("Out of bound inputs");
+				if (x > bsize || y > bsize) printf("Out of bound inputs\n");
 				playable = checkPosition(board2, x, y); //Play until target missed
 			}
 			if (gameOver(board2, bsize) == false) {
@@ -374,7 +314,7 @@ void gameAI(int board1[Max_Size][Max_Size], int board2[Max_Size][Max_Size], int 
 				printf("Computer input: x=%d, y=%d\n", x, y);
 				playable = checkPosition(board1, x, y); //Play until target missed
 				printf("Your current board:\n");
-				printBoard(board1); 
+				printBoard(board1);
 			}
 			if (gameOver(board1, bsize) == false) {
 				turn = 1;
@@ -397,11 +337,11 @@ int main(void) {
 	// Board is array with size Max_Size, values outside bsize are -1, this is to avoid variable sized arrays
 	int board[Max_Size][Max_Size];
 	int board2[Max_Size][Max_Size]; //Second set of board
-	
+
 	// int testBoard[Max_Size][Max_Size]; //Board for testing random ship placement
 	// generateEmptyBoard(testBoard, bsize);
 	// placeRandomShipsAI(testBoard, bsize);
-	
+
 	generateEmptyBoard(board, bsize);
 	generateEmptyBoard(board2, bsize); //Second set of board
 	//selectSquare(board, bsize);
