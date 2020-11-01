@@ -347,7 +347,7 @@ void gameAI(int board1[Max_Size][Max_Size], int board2[Max_Size][Max_Size], int 
 		if (turn == 1) {
 			while (playable == true) {
 				printf("Your opponent's board:\n");
-				printOpponentBoard(board2); //Delete later
+				printOpponentBoard(board2);
 				
 				//Get user inputs (Might make this process interactive)
 				printf("Please place your target's row:\n");
