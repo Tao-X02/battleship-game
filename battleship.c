@@ -5,7 +5,7 @@
 #include <time.h>
 
 // LED board used is 16*32 px so max board size is 16*16
-#define Max_Size 16
+#define Max_Size 10
 
 /* The game board is a set of integers. Each of these integers has a certain meaning:
 -1 = Outside of game boundaries
