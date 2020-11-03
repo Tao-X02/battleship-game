@@ -4,8 +4,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-// LED board used is 16*32 px so max board size is 16*16
-#define Max_Size 16
+#include "battleship.h"
 
 /* The game board is a set of integers. Each of these integers has a certain meaning:
 -1 = Outside of game boundaries
@@ -65,7 +64,7 @@ void drawShip(int board[Max_Size][Max_Size], int shipSize, int x, int y, bool is
 }
 
 
-// Checks to see if current ship position overlaps with other ships (used in placeShip)
+// Checks to see if current ship position overlaps with other ships (helper function for placeShip)
 bool isOverlap(int board[Max_Size][Max_Size]) {
 	for(int i=0; i<Max_Size*Max_Size; i++)
 		if(board[0][i] == 4) return true;
@@ -81,7 +80,8 @@ int normalize(int coord, int bsize, int shipSize) {
 }
 
 
-void placeShip(int board[Max_Size][Max_Size], int bsize, int shipSize) {
+// Bool arduino is true if arduino controller being used for input
+void placeShip(int board[Max_Size][Max_Size], int bsize, int shipSize, bool arduino) {
 	// Note: x, y coords are for the top left square of the ship
 	int x = 0;  // Corresponds to column
 	int y = 0;  // Corresponds to row
@@ -97,10 +97,14 @@ void placeShip(int board[Max_Size][Max_Size], int bsize, int shipSize) {
 		printBoard(tempBoard);
 
 		// Get user input
-		printf("Use WASD to select ship position (one lowercase character at a time). ");
-		printf("Enter 'r' to rotate ship. Enter 'x' to choose the current position.\n");
 		char input;
-		scanf("%c", &input);
+		if(arduino) input = getButtonPress();
+		else {
+			printf("Use WASD to select ship position (one lowercase character at a time). ");
+			printf("Enter 'r' to rotate ship. Enter 'x' to choose the current position.\n");
+			scanf("%c", &input);
+		}
+
 		switch(input) {
 			case 'w':
 				y--;
@@ -145,18 +149,18 @@ void placeShip(int board[Max_Size][Max_Size], int bsize, int shipSize) {
 }
 
 
-void placeAllShips(int board[Max_Size][Max_Size], int bsize) {
+void placeAllShips(int board[Max_Size][Max_Size], int bsize, bool arduino) {
 	printf("Place your ships:\n");
 	printf("Place your aircraft carrier (5 squares long)\n");
-	placeShip(board, bsize, 5);
+	placeShip(board, bsize, 5, arduino);
 	printf("Place your battleship (4 squares long)\n");
-	placeShip(board, bsize, 4);
+	placeShip(board, bsize, 4, arduino);
 	printf("Place your cruiser (3 squares long)\n");
-	placeShip(board, bsize, 3);
+	placeShip(board, bsize, 3, arduino);
 	printf("Place your submarine (3 squares long)\n");
-	placeShip(board, bsize, 3);
+	placeShip(board, bsize, 3, arduino);
 	printf("Place your destroyer (2 squares long)\n");
-	placeShip(board, bsize, 2);
+	placeShip(board, bsize, 2, arduino);
 }
 
 //Returns list of valid ship placement coordinates
@@ -345,7 +349,7 @@ int main(void) {
 	generateEmptyBoard(board, bsize);
 	generateEmptyBoard(board2, bsize); //Second set of board
 	//selectSquare(board, bsize);
-	placeAllShips(board, bsize);
+	placeAllShips(board, bsize, false);
 	// placeBoard2(board2); //Fill the second set of board
 	placeRandomShipsAI(board2, bsize);
 	gameAI(board, board2, bsize); //Main game function
