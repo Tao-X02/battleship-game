@@ -30,7 +30,11 @@ void generateEmptyBoard(int board[Max_Size][Max_Size], int size) {
 
 
 // Prints board in terminal
-void printBoard(int board[Max_Size][Max_Size]) {
+void printBoard(int board[Max_Size][Max_Size], bool arduino) {
+	if(arduino) {  // Uses displayBoard to display on LED board
+		displayBoard(board);
+		return;
+	}
 	for(int i=0; i<Max_Size; i++) {
 		if(board[i][0] < 0) break;  // Ends loop if outside bounds of board
     for(int j=0; j<Max_Size; j++) {
@@ -97,7 +101,7 @@ void placeShip(int board[Max_Size][Max_Size], int bsize, int shipSize, bool ardu
 		// Draws ship in current position on tempBoard and displays tempBoard
 		drawShip(tempBoard, shipSize, x, y, isVertical);
 		printf("Printing current board:\n");
-		printBoard(tempBoard);
+		printBoard(tempBoard, arduino);
 
 		// Get user input
 		char input;
@@ -255,7 +259,7 @@ void placeBoard2(int board2[Max_Size][Max_Size]) {
 	drawShip(board2, 3, 2, 0, true); //Cruiser
 	drawShip(board2, 3, 3, 0, true); //Submarine
 	drawShip(board2, 2, 4, 0, true); //Destroyer
-	printBoard(board2); //Delete later
+	printBoard(board2, false); //Delete later
 }
 
 
@@ -321,7 +325,7 @@ void gameAI(int board1[Max_Size][Max_Size], int board2[Max_Size][Max_Size], int 
 				printf("Computer input: x=%d, y=%d\n", x, y);
 				playable = checkPosition(board1, x, y); //Play until target missed
 				printf("Your current board:\n");
-				printBoard(board1);
+				printBoard(board1, false);
 			}
 			if (gameOver(board1, bsize) == false) {
 				turn = 1;

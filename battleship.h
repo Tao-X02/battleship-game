@@ -10,10 +10,11 @@ void placeAllShips(int board[Max_Size][Max_Size], int bsize, bool arduino);
 char getButtonPress();
 bool gameOver(int board[Max_Size][Max_Size], int bsize);
 
+// Used to display board
+void displayBoard(int board[Max_Size][Max_Size]);
+void printBoard(int board[Max_Size][Max_Size], bool arduino);
+
 //AI
 void placeRandomShipsAI(int board[Max_Size][Max_Size], int boardSize);
-
-// Functions used in bshipArduino temporarily
-void printBoard(int board[Max_Size][Max_Size]);
 
 #endif

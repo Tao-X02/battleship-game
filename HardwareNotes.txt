@@ -1,4 +1,5 @@
 Some notes for the hardware side:
+(note: these are mostly just for my own use -Jaswin)
 
 Buttons (from top to bottom) correspond to the pins:
 10 - X
@@ -7,3 +8,5 @@ Buttons (from top to bottom) correspond to the pins:
 7  - S
 
 When pressed, digital read will be LOW
+
+For power adapter, tape is positive and white is negative
