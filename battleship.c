@@ -286,55 +286,98 @@ bool gameOver(int board[Max_Size][Max_Size], int bsize) {
 }
 
 
-void gameAI(int board1[Max_Size][Max_Size], int board2[Max_Size][Max_Size], int bsize) {
-	int x;
-	int y;
-	bool playable = true;
-	bool over = false;
-	int turn = 1;
+bool playerTurn (int board1[Max_Size][Max_Size], int board2[Max_Size][Max_Size], int bsize){
+    printf("Your opponent's board:\n");
+                printOpponentBoard(board2);
+                int x,y;
+                //Get user inputs (Might make this process interactive)
+                printf("Please place your target's row:\n");
+                int input = 0;
+                while (input == 0)
+                {
+                    if (scanf("%d", &x) == 0)
+                    {
+                        printf("Please submit a valid row number\n");
+                    }
+                    else
+                    {
+                        input = 1;
+                    }
+                }
+                input = 0;
+                printf("Please place your target's column:\n");
+                while (input == 0)
+                {
+                    if (scanf("%d", &y) == 0)
+                    {
+                        printf("Please submit a valid column number\n");
+                    }
+                    else
+                    {
+                        input = 1;
+                    }
+                }
+                if (x > bsize || y > bsize)
+                    printf("Out of bound inputs\n");
+                return checkPosition(board2, x, y); //Play until target missed
+}
+bool AIturn (int board1[Max_Size][Max_Size], int board2[Max_Size][Max_Size], int bsize){
+    //Random target (for now)
+                int x, y;
+                x = rand() % bsize + 1;
+                y = rand() % bsize + 1;
+                printf("Computer input: x=%d, y=%d\n", x, y);
+                printf("Your current board:\n");
+                printBoard(board1, false);
+                return checkPosition(board1, x, y); //Play until target missed
+}
 
-	while(over == false) {
-		//Player
-		if (turn == 1) {
-			while (playable == true) {
-				printf("Your opponent's board:\n");
-				printOpponentBoard(board2);
+void gameAI(int board1[Max_Size][Max_Size], int board2[Max_Size][Max_Size], int bsize)
+{
+    int x;
+    int y;
+    bool playable = true;
+    bool over = false;
+    int turn = 1;
 
-				//Get user inputs (Might make this process interactive)
-				printf("Please place your target's row:\n");
-				scanf("%d", &x);
-				printf("Please place your target's column:\n");
-				scanf("%d", &y);
-				if (x > bsize || y > bsize) printf("Out of bound inputs\n");
-				playable = checkPosition(board2, x, y); //Play until target missed
-			}
-			if (gameOver(board2, bsize) == false) {
-				turn = 2;
-				playable = true;
-			} else {
-				over = true;
-			}
-		}
+    while (over == false)
+    {
+        //Player
+        if (turn == 1)
+        {
+            while (playable == true)
+            {
+                playerTurn(board1, board2, bsize);
+            }
+            if (gameOver(board2, bsize) == false)
+            {
+                turn = 2;
+                playable = true;
+            }
+            else
+            {
+                over = true;
+            }
+        }
 
-		//AI opponent
-		else if (turn == 2) {
-			while (playable == true) {
-				//Random target (for now)
-				x = rand() % bsize + 1;
-				y = rand() % bsize + 1;
-				printf("Computer input: x=%d, y=%d\n", x, y);
-				playable = checkPosition(board1, x, y); //Play until target missed
-				printf("Your current board:\n");
-				printBoard(board1, false);
-			}
-			if (gameOver(board1, bsize) == false) {
-				turn = 1;
-				playable = true;
-			} else {
-				over = true;
-			}
-		}
-	}
+        //AI opponent
+        else if (turn == 2)
+        {
+            while (playable == true)
+            {
+                AIturn(board2, board1, bsize);
+            }
+            if (gameOver(board1, bsize) == false)
+            {
+                turn = 1;
+                playable = true;
+            }
+            else
+            {
+                over = true;
+            }
+        }
+    }
 }
 
 
