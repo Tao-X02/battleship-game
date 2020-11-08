@@ -266,11 +266,13 @@ void placeBoard2(int board2[Max_Size][Max_Size]) {
 bool checkPosition(int board[Max_Size][Max_Size], int x, int y) {
 	if(board[x-1][y-1] == 2) {
 		board[x-1][y-1]++; //Hit: 3
+		printOpponentBoard(board);
 		return true;
 	}
 	else
 	{
 		board[x-1][y-1] =1;
+		printOpponentBoard(board);
 		return false; //Miss: 1
 	}
 }
@@ -292,35 +294,14 @@ bool playerTurn (int board1[Max_Size][Max_Size], int board2[Max_Size][Max_Size],
                 int x,y;
                 //Get user inputs (Might make this process interactive)
                 printf("Please place your target's row:\n");
-                int input = 0;
-                while (input == 0)
-                {
-                    if (scanf("%d", &x) == 0)
-                    {
-                        printf("Please submit a valid row number\n");
-                    }
-                    else
-                    {
-                        input = 1;
-                    }
-                }
-                input = 0;
+                scanf("%d", &x);
                 printf("Please place your target's column:\n");
-                while (input == 0)
-                {
-                    if (scanf("%d", &y) == 0)
-                    {
-                        printf("Please submit a valid column number\n");
-                    }
-                    else
-                    {
-                        input = 1;
-                    }
-                }
+                scanf("%d", &y);
                 if (x > bsize || y > bsize)
                     printf("Out of bound inputs\n");
                 return checkPosition(board2, x, y); //Play until target missed
 }
+
 bool AIturn (int board1[Max_Size][Max_Size], int board2[Max_Size][Max_Size], int bsize){
     //Random target (for now)
                 int x, y;
@@ -332,22 +313,64 @@ bool AIturn (int board1[Max_Size][Max_Size], int board2[Max_Size][Max_Size], int
                 return checkPosition(board1, x, y); //Play until target missed
 }
 
-void gameAI(int board1[Max_Size][Max_Size], int board2[Max_Size][Max_Size], int bsize)
+void gameAI(int board1[Max_Size][Max_Size], int board2[Max_Size][Max_Size], int bsize, int mode)
 {
     int x;
     int y;
     bool playable = true;
     bool over = false;
     int turn = 1;
-
-    while (over == false)
+	if(mode ==1){
+		while (over == false)
     {
         //Player
         if (turn == 1)
         {
             while (playable == true)
             {
-                playerTurn(board1, board2, bsize);
+				printf("Player 1's turn:\n");
+                playable = playerTurn(board1, board2, bsize);
+            }
+            if (gameOver(board2, bsize) == false)
+            {
+                turn = 2;
+                playable = true;
+            }
+            else
+            {
+                over = true;
+            }
+        }
+
+        //Player 2
+        else if (turn == 2)
+        {
+			printf("Player 2's turn:\n");
+            while (playable == true)
+            {
+                playable = playerTurn(board2, board1, bsize);
+            }
+            if (gameOver(board1, bsize) == false)
+            {
+                turn = 1;
+                playable = true;
+            }
+            else
+            {
+                over = true;
+            }
+        }
+    }
+	}
+	if(mode == 2){
+		while (over == false)
+    {
+        //Player
+        if (turn == 1)
+        {
+            while (playable == true)
+            {
+                playable = playerTurn(board1, board2, bsize);
             }
             if (gameOver(board2, bsize) == false)
             {
@@ -365,7 +388,7 @@ void gameAI(int board1[Max_Size][Max_Size], int board2[Max_Size][Max_Size], int 
         {
             while (playable == true)
             {
-                AIturn(board2, board1, bsize);
+                playable = AIturn(board2, board1, bsize);
             }
             if (gameOver(board1, bsize) == false)
             {
@@ -378,12 +401,18 @@ void gameAI(int board1[Max_Size][Max_Size], int board2[Max_Size][Max_Size], int 
             }
         }
     }
+	}
+    
+	
 }
 
 
 int main(void) {
 	srand( time(NULL) ); //seed random with time. Otherwise the sequences are always the same
 	int bsize;  // Board size (board is always square)
+	int mode;
+    printf("Please choose gamemode:\nMultiplayer (input 1)\nAI (input 2)\n");
+    scanf("%d", &mode);
 	printf("Input board width between 5 and %d (board will be a square)\n", Max_Size);
 	scanf("%d", &bsize);
 	// Board size must be at least 5 to fit aircraft carrier and less than Max_Size to fit on LED board
@@ -398,10 +427,16 @@ int main(void) {
 
 	generateEmptyBoard(board, bsize);
 	generateEmptyBoard(board2, bsize); //Second set of board
-	//selectSquare(board, bsize);
-	placeAllShips(board, bsize, false);
-	// placeBoard2(board2); //Fill the second set of board
-	placeRandomShipsAI(board2, bsize);
-	gameAI(board, board2, bsize); //Main game function
+	if(mode == 1){
+		printf("Placing Player 1's Board");
+        placeAllShips(board, bsize, false);
+		printf("Placing Player 2's Board");
+        placeAllShips(board2, bsize, false);
+    }
+    else if (mode == 2){
+        placeAllShips(board, bsize, false);
+        placeRandomShipsAI(board2, bsize);
+    }
+	gameAI(board, board2, bsize, mode); //Main game function
 	return 0;
 }
