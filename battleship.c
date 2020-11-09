@@ -428,9 +428,9 @@ int main(void) {
 	generateEmptyBoard(board, bsize);
 	generateEmptyBoard(board2, bsize); //Second set of board
 	if(mode == 1){
-		printf("Placing Player 1's Board");
+		printf("Placing Player 1's Board\n");
         placeAllShips(board, bsize, false);
-		printf("Placing Player 2's Board");
+		printf("Placing Player 2's Board\n");
         placeAllShips(board2, bsize, false);
     }
     else if (mode == 2){
