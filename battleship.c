@@ -31,10 +31,10 @@ void generateEmptyBoard(int board[Max_Size][Max_Size], int size) {
 
 // Prints board in terminal
 void printBoard(int board[Max_Size][Max_Size], bool arduino) {
-	if(arduino) {  // Uses displayBoard to display on LED board
+	/*if(arduino) {  // Uses displayBoard to display on LED board
 		displayBoard(board);
 		return;
-	}
+	}*/
 	for(int i=0; i<Max_Size; i++) {
 		if(board[i][0] < 0) break;  // Ends loop if outside bounds of board
     for(int j=0; j<Max_Size; j++) {
@@ -105,12 +105,12 @@ void placeShip(int board[Max_Size][Max_Size], int bsize, int shipSize, bool ardu
 
 		// Get user input
 		char input;
-		if(arduino) input = getButtonPress();
-		else {
+		//if(arduino) input = getButtonPress();
+		//else {
 			printf("Use WASD to select ship position (one lowercase character at a time). ");
 			printf("Enter 'r' to rotate ship. Enter 'x' to choose the current position.\n");
 			scanf("%c", &input);
-		}
+		//}
 
 		switch(input) {
 			case 'w':
