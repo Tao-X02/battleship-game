@@ -416,8 +416,6 @@ int main(void) {
 		if(scanf("%d", &mode) != 1 || (mode != 1 && mode != 2)) printf("Invalid input\n");
 		else break;
 	}
-	printf("Input board width between 5 and %d (board will be a square)\n", Max_Size);
-	scanf("%d", &bsize);
 	// Board size must be at least 5 to fit aircraft carrier and less than Max_Size to fit on LED board
 	while(true) {
 		printf("Input board width between 5 and %d (board will be a square)\n", Max_Size);
