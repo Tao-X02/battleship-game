@@ -1,4 +1,5 @@
 #include "battleship.h"
+#include "menus.h"
 #include <RGBmatrixPanel.h>
 
 // Defining pins used for LED board

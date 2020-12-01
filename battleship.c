@@ -411,19 +411,18 @@ int main(void) {
 	srand( time(NULL) ); //seed random with time. Otherwise the sequences are always the same
 	int bsize;  // Board size (board is always square)
 	int mode;
-    printf("Please choose gamemode:\nMultiplayer (input 1)\nAI (input 2)\n");
-	scanf("%d", &mode);
-    while(mode != 1 && mode != 2){
-		printf("Please input a valid number\n");
-		scanf("%d", &mode);
+	while(true) {
+		printf("Please choose gamemode:\nMultiplayer (input 1)\nAI (input 2)\n");
+		if(scanf("%d", &mode) != 1 || (mode != 1 && mode != 2)) printf("Invalid input\n");
+		else break;
 	}
 	printf("Input board width between 5 and %d (board will be a square)\n", Max_Size);
 	scanf("%d", &bsize);
 	// Board size must be at least 5 to fit aircraft carrier and less than Max_Size to fit on LED board
-	while(bsize<5 || bsize>Max_Size){
-		printf("Please input a valid board size\n");
+	while(true) {
 		printf("Input board width between 5 and %d (board will be a square)\n", Max_Size);
-		scanf("%d", &bsize);
+		if(scanf("%d", &bsize); != 1 || (bsize<5 || bsize>Max_Size)) printf("Invalid input\n");
+		else break;
 	}
 	// Board is array with size Max_Size, values outside bsize are -1, this is to avoid variable sized arrays
 	char board[Max_Size][Max_Size];
