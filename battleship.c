@@ -9,8 +9,8 @@
 // LED board used is 16*32 px so max board size is 16*16
 // #define Max_Size 10
 
-/* The game board is a set of integers. Each of these integers has a certain meaning:
--1 = Outside of game boundaries
+/* The game board is a set of integers (represented by chars to save memory). Each of these integers has a certain meaning:
+255 = Outside of game boundaries
 0  = Empty water
 2  = Current position of ship
 4  = Overlapping ships (only used when placing ship, should not be present when playing the game)
@@ -18,27 +18,27 @@
 3  = Hit
 */
 
-void generateEmptyBoard(int board[Max_Size][Max_Size], int size) {
-	//Sets all values in board to 0, outside board to -1
+void generateEmptyBoard(char board[Max_Size][Max_Size], int size) {
+	//Sets all values in board to 0, outside board to 255
 	for(int i=0; i<Max_Size; i++) {
 		for(int j=0; j<Max_Size; j++) {
 			if(i<size && j<size) board[i][j] = 0;
-			else board[i][j] = -1;
+			else board[i][j] = 255;
 		}
 	}
 }
 
 
 // Prints board in terminal
-void printBoard(int board[Max_Size][Max_Size], bool arduino) {
+void printBoard(char board[Max_Size][Max_Size], bool arduino) {
 	/*if(arduino) {  // Uses displayBoard to display on LED board
 		displayBoard(board);
 		return;
 	}*/
 	for(int i=0; i<Max_Size; i++) {
-		if(board[i][0] < 0) break;  // Ends loop if outside bounds of board
+		if(board[i][0] == 255) break;  // Ends loop if outside bounds of board
     for(int j=0; j<Max_Size; j++) {
-			if(board[i][j] < 0) break;  // Moves to next line if outside bounds of board
+			if(board[i][j] == 255) break;  // Moves to next line if outside bounds of board
 			if (board[i][j] == 1) printf("%d ", 0);  // Displays enemy's misses as ocean
 			else printf("%d ", board[i][j]);
 		}
@@ -48,11 +48,11 @@ void printBoard(int board[Max_Size][Max_Size], bool arduino) {
 }
 
 // Prints a board that only shows hit or miss targets
-void printOpponentBoard(int board[Max_Size][Max_Size]) {
+void printOpponentBoard(char board[Max_Size][Max_Size]) {
 	for(int i=0; i<Max_Size; i++) {
-		if(board[i][0] < 0) break;  // Ends loop if outside bounds of board
+		if(board[i][0] == 255) break;  // Ends loop if outside bounds of board
     for(int j=0; j<Max_Size; j++) {
-			if(board[i][j] < 0) break;  // Moves to next line if outside bounds of board
+			if(board[i][j] == 255) break;  // Moves to next line if outside bounds of board
 			if ((board[i][j]!= 1) && (board[i][j]!= 3)) printf("%d ", 0);  // Prints everything other than hit or miss as ocean
 			else printf("%d ", board[i][j]);
 		}
@@ -63,7 +63,7 @@ void printOpponentBoard(int board[Max_Size][Max_Size]) {
 
 
 // Helper function for placeShip, draws ship on board
-void drawShip(int board[Max_Size][Max_Size], int shipSize, int x, int y, bool isVertical) {
+void drawShip(char board[Max_Size][Max_Size], int shipSize, int x, int y, bool isVertical) {
 	for(int i=0; i<shipSize; i++) {
 		if(isVertical) board[y+i][x] += 2;
 		else board[y][x+i] += 2;
@@ -72,7 +72,7 @@ void drawShip(int board[Max_Size][Max_Size], int shipSize, int x, int y, bool is
 
 
 // Checks to see if current ship position overlaps with other ships (helper function for placeShip)
-bool isOverlap(int board[Max_Size][Max_Size]) {
+bool isOverlap(char board[Max_Size][Max_Size]) {
 	for(int i=0; i<Max_Size*Max_Size; i++)
 		if(board[0][i] == 4) return true;
 	return false;
@@ -88,14 +88,14 @@ int normalize(int coord, int bsize, int shipSize) {
 
 
 // Bool arduino is true if arduino controller being used for input
-void placeShip(int board[Max_Size][Max_Size], int bsize, int shipSize, bool arduino) {
+void placeShip(char board[Max_Size][Max_Size], int bsize, int shipSize, bool arduino) {
 	// Note: x, y coords are for the top left square of the ship
 	int x = 0;  // Corresponds to column
 	int y = 0;  // Corresponds to row
 	bool isVertical = true;
 	while(1) {
 		// Creates tempBoard, a copy of board
-		int tempBoard[Max_Size][Max_Size];
+		char tempBoard[Max_Size][Max_Size];
 		for(int i=0; i<Max_Size*Max_Size; i++) tempBoard[0][i] = board[0][i];
 
 		// Draws ship in current position on tempBoard and displays tempBoard
@@ -156,7 +156,7 @@ void placeShip(int board[Max_Size][Max_Size], int bsize, int shipSize, bool ardu
 }
 
 
-void placeAllShips(int board[Max_Size][Max_Size], int bsize, bool arduino) {
+void placeAllShips(char board[Max_Size][Max_Size], int bsize, bool arduino) {
 	printf("Place your ships:\n");
 	printf("Place your aircraft carrier (5 squares long)\n");
 	placeShip(board, bsize, 5, arduino);
@@ -171,7 +171,7 @@ void placeAllShips(int board[Max_Size][Max_Size], int bsize, bool arduino) {
 }
 
 //Returns list of valid ship placement coordinates
-void findAllValidPlacements(int board[Max_Size][Max_Size], int shipSize, int boardSize, int placements[Max_Size][Max_Size]) {
+void findAllValidPlacements(char board[Max_Size][Max_Size], int shipSize, int boardSize, char placements[Max_Size][Max_Size]) {
 	for (int x = 0; x < boardSize; x++) {
 		for (int y = 0; y < boardSize; y++) {
 			int horizontal = 1; //boolean value, 1 if horizontal placement is valid at coordinate
@@ -211,7 +211,7 @@ void findAllValidPlacements(int board[Max_Size][Max_Size], int shipSize, int boa
 //chooses random place for ship given a list of valid placements
 //sets the value of list location[3]
 //location[3] has the form {x,y,r}, where r is a boolean for whether the ship is vertical or not
-void choosePlacement(int placements[Max_Size][Max_Size], int location[3], int boardSize) {
+void choosePlacement(char placements[Max_Size][Max_Size], int location[3], int boardSize) {
 	int validInd[Max_Size*Max_Size][3];
 	int numOfValidInd = 0;
 	for (int i = 0; i < boardSize; i++)
@@ -240,11 +240,11 @@ void choosePlacement(int placements[Max_Size][Max_Size], int location[3], int bo
 }
 
 //Place ships in random positions on the AI board
-void placeRandomShipsAI(int board[Max_Size][Max_Size], int boardSize) {
+void placeRandomShipsAI(char board[Max_Size][Max_Size], int boardSize) {
 	int ships[] = {5,4,3,3,2};
 	for (int i = 0; i < 5; i++)
 	{
-		int placements[Max_Size][Max_Size];
+		char placements[Max_Size][Max_Size];
 		findAllValidPlacements(board, ships[i], boardSize, placements);
 		int location[3];
 		choosePlacement(placements, location, boardSize);
@@ -253,7 +253,7 @@ void placeRandomShipsAI(int board[Max_Size][Max_Size], int boardSize) {
 }
 
 //Fill the board with ships with defined positions (for now)
-void placeBoard2(int board2[Max_Size][Max_Size]) {
+void placeBoard2(char board2[Max_Size][Max_Size]) {
 	drawShip(board2, 5, 0, 0, true); //Aircraft carrier
 	drawShip(board2, 4, 1, 0, true); //Battleship
 	drawShip(board2, 3, 2, 0, true); //Cruiser
@@ -263,7 +263,7 @@ void placeBoard2(int board2[Max_Size][Max_Size]) {
 }
 
 
-bool checkPosition(int board[Max_Size][Max_Size], int x, int y) {
+bool checkPosition(char board[Max_Size][Max_Size], int x, int y) {
 	if(board[x-1][y-1] == 2) {
 		board[x-1][y-1]++; //Hit: 3
 		printOpponentBoard(board);
@@ -278,7 +278,7 @@ bool checkPosition(int board[Max_Size][Max_Size], int x, int y) {
 }
 
 
-bool gameOver(int board[Max_Size][Max_Size], int bsize) {
+bool gameOver(char board[Max_Size][Max_Size], int bsize) {
 	for (int i = 0; i < bsize; i++) {
 		for (int j = 0; j < bsize; j++) {
 			if(board[i][j] == 2) return false; //Check if all ships have been completely destroyed
@@ -288,7 +288,7 @@ bool gameOver(int board[Max_Size][Max_Size], int bsize) {
 }
 
 
-bool playerTurn (int board1[Max_Size][Max_Size], int board2[Max_Size][Max_Size], int bsize){
+bool playerTurn (char board1[Max_Size][Max_Size], char board2[Max_Size][Max_Size], int bsize){
     printf("Your opponent's board:\n");
                 printOpponentBoard(board2);
                 int x,y;
@@ -302,7 +302,7 @@ bool playerTurn (int board1[Max_Size][Max_Size], int board2[Max_Size][Max_Size],
                 return checkPosition(board2, x, y); //Play until target missed
 }
 
-bool AIturn (int board1[Max_Size][Max_Size], int board2[Max_Size][Max_Size], int bsize){
+bool AIturn (char board1[Max_Size][Max_Size], char board2[Max_Size][Max_Size], int bsize){
     //Random target (for now)
                 int x, y;
                 x = rand() % bsize + 1;
@@ -313,7 +313,7 @@ bool AIturn (int board1[Max_Size][Max_Size], int board2[Max_Size][Max_Size], int
                 return checkPosition(board1, x, y); //Play until target missed
 }
 
-void gameAI(int board1[Max_Size][Max_Size], int board2[Max_Size][Max_Size], int bsize, int mode)
+void gameAI(char board1[Max_Size][Max_Size], char board2[Max_Size][Max_Size], int bsize, int mode)
 {
     int x;
     int y;
@@ -402,8 +402,8 @@ void gameAI(int board1[Max_Size][Max_Size], int board2[Max_Size][Max_Size], int 
         }
     }
 	}
-    
-	
+
+
 }
 
 
@@ -417,9 +417,9 @@ int main(void) {
 	scanf("%d", &bsize);
 	// Board size must be at least 5 to fit aircraft carrier and less than Max_Size to fit on LED board
 	assert(bsize >= 5 && bsize <= Max_Size);
-	// Board is array with size Max_Size, values outside bsize are -1, this is to avoid variable sized arrays
-	int board[Max_Size][Max_Size];
-	int board2[Max_Size][Max_Size]; //Second set of board
+	// Board is array with size Max_Size, values outside bsize are 255, this is to avoid variable sized arrays
+	char board[Max_Size][Max_Size];
+	char board2[Max_Size][Max_Size]; //Second set of board
 
 	// int testBoard[Max_Size][Max_Size]; //Board for testing random ship placement
 	// generateEmptyBoard(testBoard, bsize);
