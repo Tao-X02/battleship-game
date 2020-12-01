@@ -412,12 +412,20 @@ int main(void) {
 	int bsize;  // Board size (board is always square)
 	int mode;
     printf("Please choose gamemode:\nMultiplayer (input 1)\nAI (input 2)\n");
-    scanf("%d", &mode);
+	scanf("%d", &mode);
+    while(mode != 1 && mode != 2){
+		printf("Please input a valid number\n");
+		scanf("%d", &mode);
+	}
 	printf("Input board width between 5 and %d (board will be a square)\n", Max_Size);
 	scanf("%d", &bsize);
 	// Board size must be at least 5 to fit aircraft carrier and less than Max_Size to fit on LED board
-	assert(bsize >= 5 && bsize <= Max_Size);
-	// Board is array with size Max_Size, values outside bsize are 255, this is to avoid variable sized arrays
+	while(bsize<5 || bsize>Max_Size){
+		printf("Please input a valid board size\n");
+		printf("Input board width between 5 and %d (board will be a square)\n", Max_Size);
+		scanf("%d", &bsize);
+	}
+	// Board is array with size Max_Size, values outside bsize are -1, this is to avoid variable sized arrays
 	char board[Max_Size][Max_Size];
 	char board2[Max_Size][Max_Size]; //Second set of board
 
