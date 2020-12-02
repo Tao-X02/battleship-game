@@ -4,12 +4,12 @@
 #include <time.h>
 
 // Prints board in terminal
-void printBoardChar(int board[Max_Size][Max_Size], bool arduino) {
-	for(int i=0; i<Max_Size; i++) {
+void printBoardChar(char board[Max_Size][Max_Size], bool arduino) {
+	for(char i=0; i<Max_Size; i++) {
 		if(board[i][0] < 0) break;  // Ends loop if outside bounds of board
-        for(int j=0; j<Max_Size; j++) {
-            if(board[i][j] < 0) break;  // Moves to next line if outside bounds of board
-            if (board[i][j] == 0) printf(". ");  // Displays enemy's misses as ocean
+        for(char j=0; j<Max_Size; j++) {
+            if(board[i][j] < 0) break;
+            if (board[i][j] == 0) printf(". ");
             else printf("%c ", board[i][j]);
         }
         printf("\n");
@@ -19,11 +19,11 @@ void printBoardChar(int board[Max_Size][Max_Size], bool arduino) {
 
 struct AIMedium {
     int bSize;
-    int board[Max_Size][Max_Size];
+    char board[Max_Size][Max_Size];
 };
 
 struct AIMedium createMediumAI(int bSize) {
-    int b[Max_Size][Max_Size];
+    char b[Max_Size][Max_Size];
     generateEmptyBoard(b,bSize);
     struct AIMedium ai = {bSize, {0}};
     // i honestly have no idea why i have to do this loop but whatever it works
@@ -35,10 +35,10 @@ struct AIMedium createMediumAI(int bSize) {
 }
 
 int AICheckWin(struct AIMedium ai) {
-    int count = 0;
-    for (int i = 0; i < ai.bSize; i++)
+    char count = 0;
+    for (char i = 0; i < ai.bSize; i++)
     {
-        for (int j = 0; j < ai.bSize; j++)
+        for (char j = 0; j < ai.bSize; j++)
         {
             if (ai.board[i][j] == 'X' || ai.board[i][j] == 'W') count++;
         }
@@ -47,15 +47,16 @@ int AICheckWin(struct AIMedium ai) {
 }
 
 // returns boolean for if location hasnt been attacked yet
-int AIMediumIsEmpty(struct AIMedium *ai, int i, int j) {
+int AIMediumIsEmpty(struct AIMedium *ai, char i, char j) {
     if (i < 0 || i >= ai->bSize || j < 0 || j >= ai->bSize) return 0;
     return ai->board[i][j] == 0 ? 1 : 0;
 }
-void AIMediumRandom(struct AIMedium *ai, int board[Max_Size][Max_Size]) {
+
+void AIMediumRandom(struct AIMedium *ai, char board[Max_Size][Max_Size]) {
     int randomMovesCount = 0;
-    for (int i = 0; i < (ai->bSize); i++)
+    for (char i = 0; i < (ai->bSize); i++)
     {
-        for (int j = 0; j < ai->bSize; j++)
+        for (char j = 0; j < ai->bSize; j++)
         {
             if ((i+j)%2 == 1 && ai->board[i][j] == 0) {
                 randomMovesCount++;
@@ -66,10 +67,10 @@ void AIMediumRandom(struct AIMedium *ai, int board[Max_Size][Max_Size]) {
     int move = rand() % (randomMovesCount);
     randomMovesCount = 0;
 
-    for (int i = 0; i < (ai->bSize); i++)
+    for (char i = 0; i < (ai->bSize); i++)
     {
         if (randomMovesCount == -1) break;
-        for (int j = 0; j < ai->bSize; j++)
+        for (char j = 0; j < ai->bSize; j++)
         {
             if ((i+j)%2 == 1 && ai->board[i][j] == 0) {
                 if (randomMovesCount == move) {
@@ -83,10 +84,10 @@ void AIMediumRandom(struct AIMedium *ai, int board[Max_Size][Max_Size]) {
     }
 }
 
-void AIMediumAttack(struct AIMedium *ai, int board[Max_Size][Max_Size]) {
-    for (int i = 0; i < (ai->bSize); i++)
+void AIMediumAttack(struct AIMedium *ai, char board[Max_Size][Max_Size]) {
+    for (char i = 0; i < (ai->bSize); i++)
     {
-        for (int j = 0; j < ai->bSize; j++)
+        for (char j = 0; j < ai->bSize; j++)
         {
             if (ai->board[i][j] == 'X') {
                 if (AIMediumIsEmpty(ai, i-1, j)) { ai->board[i-1][j] = board[i-1][j] == 2 ? 'X' : 'o' ;}
@@ -94,6 +95,7 @@ void AIMediumAttack(struct AIMedium *ai, int board[Max_Size][Max_Size]) {
                 else if (AIMediumIsEmpty(ai, i+1, j)) { ai->board[i+1][j] = board[i+1][j] == 2 ? 'X' : 'o' ;}
                 else if (AIMediumIsEmpty(ai, i, j+1)) { ai->board[i][j+1] = board[i][j+1] == 2 ? 'X' : 'o' ;}
                 else {ai->board[i][j] = 'W'; continue;}
+                return;
             }
         }
     }
@@ -105,7 +107,7 @@ int main(void) {
     int bsize = 10;
     //printf("Input board width between 5 and %d (board will be a square)\n", Max_Size);
 	//scanf("%d", &bsize);
-    int board[Max_Size][Max_Size];
+    char board[Max_Size][Max_Size];
     generateEmptyBoard(board, bsize);
     placeRandomShipsAI(board, bsize);
 
@@ -118,9 +120,13 @@ int main(void) {
     //     printBoardChar(ai.board, false);
     // }
 
+    //int temp;
+
     while (!AICheckWin(ai)) {
         AIMediumAttack(&ai, board);
+        printBoardChar(board, false);
         printBoardChar(ai.board, false);
+        //scanf("%d", &temp); // uncomment this to see the moves one at a time
     }
 
     printf("success\n");
