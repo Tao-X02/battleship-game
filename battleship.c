@@ -306,9 +306,7 @@ bool playerTurn (char board1[Max_Size][Max_Size], char board2[Max_Size][Max_Size
 }
 
 bool AIturn (char board1[Max_Size][Max_Size], char board2[Max_Size][Max_Size], int bsize, struct AIMedium *ai){
-	printf("AI add AIturn: %d\n", ai);
 	if (ai) {
-		printf("Medium AI\n");
 		int x, y;
 		int *coords = AIMediumAttack(ai, board2);
 		x = coords[0]+1;y=coords[1]+1;
@@ -318,7 +316,6 @@ bool AIturn (char board1[Max_Size][Max_Size], char board2[Max_Size][Max_Size], i
 		printBoard(board2, false);
 		return checkPosition(board2, x, y); //Play until target missed
 	} else {
-		printf("Random AI\n");
 		//Random target if ai is NULL
 		int x, y;
 		x = rand() % bsize + 1;
@@ -578,10 +575,7 @@ int main(void) {
 		ai = malloc(sizeof(struct AIMedium));
 		struct AIMedium aitemp = createMediumAI(bsize);
 		*ai = aitemp;
-		printf("AI add: %d\n", ai);
 	}
-	
-	printf("AI add: %d\n", ai);
 
 	// int testBoard[Max_Size][Max_Size]; //Board for testing random ship placement
 	// generateEmptyBoard(testBoard, bsize);
