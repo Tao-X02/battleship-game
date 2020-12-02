@@ -1,5 +1,5 @@
 #include <LiquidCrystal.h>
-//#include led display library
+#include <RGBmatrixPanel.h>
 #include "menus.h"
 
 void mainmenu() {
@@ -22,14 +22,14 @@ void difficulty() {
 	exiticon(0, 0);
 	difficon(5, 4);
 }
-
+/*
 void gamescreen(int p1[10][10], int p2[10][10]){
 	clear();
 	exiticon(0, 0);
 	printGrid(p1, 3, 3);
 	printGrid(p2, 18, 3);
 }
-
+*/
 
 /*Button Displays*/
 void exiticon(int x, int y) {
@@ -107,7 +107,7 @@ void difficon(int x, int y) {
 void clear(void) {
 	matrix.fillRect(0, 0, 32, 16, matrix.Color333(0, 0, 0));
 }
-
+/*
 void printGrid(int board[10][10], int x, int y, int size) {
 	drawRect(x-1, y-1, size+2, size+2, matrix.Color333(7, 7, 7));
 	for (int i = 0; i < size; i++) {
@@ -125,3 +125,4 @@ void printGrid(int board[10][10], int x, int y, int size) {
 		}
 	}
 }
+*/
