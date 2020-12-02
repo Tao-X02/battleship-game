@@ -1,5 +1,6 @@
 #ifndef BATTLESHIP_H
 #define BATTLESHIP_H
+#include <stdbool.h>
 
 // LED board used is 16*32 px so max board size is 16*16
 #define Max_Size 10
