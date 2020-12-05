@@ -14,10 +14,14 @@ struct color {
 
 /*MENU LAYOUT*/
 
-void mainmenu();//done
-void gamemode();
-void difficulty();
-//void gamescreen(int p1[10][10], int p2[10][10]);
+int mainmenu(); //returns gamemode
+				//0 for exit
+				//1 for pvp
+				//2 for easy AI
+				//3 for hard AI
+int gamemode();
+int difficulty();
+void gamescreen(int p1[10][10], int p2[10][10]);
 void settings();
 void help();//how to play
 
@@ -29,7 +33,7 @@ void settingsicon(int x, int y);
 void playicon(int x, int y);
 void pvpicon(int x, int y);
 void pvcicon(int x, int y);
-//void printGrid(int board[10][10], int x, int y);
+void printGrid(int board[10][10], int x, int y);
 	//for player 1's board, enter (3, 3) for (x, y)
 	//for player 2's board(or comp), enter (18, 3)
 void difficon(int x, int y);

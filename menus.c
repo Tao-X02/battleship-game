@@ -1,35 +1,85 @@
-#include <LiquidCrystal.h>
+//#include <LiquidCrystal.h>
 #include <RGBmatrixPanel.h>
 #include "menus.h"
 
-void mainmenu() {
+
+/* GAMEMODES
+	0 - exit game
+	1 - pvp
+	2 - easy AI
+	3 - hard AI
+*/
+int mainmenu() {
 	clear();
-	matrix.setCursor(15, 7);
 	exiticon(0, 0);
 	playicon(11, 1);
 	settingsicon(26, 11);
 	helpicon(5, 10);
+
+	char button;
+
+	do {
+		button = getButtonPress();
+	} while (!(button == 'x' || button == 'd' /*|| button == 'r' || button == 's'*/));
+
+	switch(button) {
+		case 'x'://exit
+			return 0;
+		case 'd'://play
+			return gamemode();
+		/*case 'r'://tutorial
+			//tutorial();
+			break;
+		case 's'://settings
+			//settings();*/
+	}
+
 }
-void gamemode() {
+int gamemode() {
 	clear();
-	matrix.setCursor(15, 7);
 	exiticon(0, 0);
 	pvpicon(9, 6);
 	pvcicon(20, 6);
+
+	do {
+		button = getButtonPress();
+	} while (!(button == 'x' || button == 'd' ||  button == 's'));
+
+	switch(button) {
+		case 'x'://back to main menu
+			return mainmenu();
+		case 'd'://PvC
+			return difficulty();
+		case 's'://PvP
+			return 1;
+	}
 }
-void difficulty() {
+int difficulty() {
 	clear();
 	exiticon(0, 0);
 	difficon(5, 4);
+
+	do {
+		button = getButtonPress();
+	} while (!(button == 'x' || button == 'd' || button == 's'));
+
+	switch(button) {
+		case 'x'://back to gamemode
+			return gamemode();
+		case 'd'://hard
+			return 3;
+		case 's'://easy
+			return 2;
+	}
 }
-/*
 void gamescreen(int p1[10][10], int p2[10][10]){
 	clear();
 	exiticon(0, 0);
 	printGrid(p1, 3, 3);
 	printGrid(p2, 18, 3);
 }
-*/
+//void tutorial();
+//void settings();
 
 /*Button Displays*/
 void exiticon(int x, int y) {
@@ -94,12 +144,12 @@ void pvcicon(int x, int y) {
 	matrix.drawLine(x, y+5, x+5, y+5, matrix.Color333(7, 0, 0));
 }
 void difficon(int x, int y) {
-	matrix.fillRect(x, y+4, 2, 3, matrix.Color333(0, 7, 0));
+	matrix.fillRect(x, y+4, 2, 3, matrix.Color333(0, 7, 0));//easy
 
-	matrix.fillRect(x+6, y+4, 2, 3, matrix.Color333(7, 7, 0));
-	matrix.fillRect(x+9, y+2, 2, 5, matrix.Color333(7, 7, 0));
+	//matrix.fillRect(x+6, y+4, 2, 3, matrix.Color333(7, 7, 0));//medium
+	//matrix.fillRect(x+9, y+2, 2, 5, matrix.Color333(7, 7, 0));
 
-	matrix.fillRect(x+15, y+4, 2, 3, matrix.Color333(7, 0, 0));
+	matrix.fillRect(x+15, y+4, 2, 3, matrix.Color333(7, 0, 0));//hard
 	matrix.fillRect(x+18, y+2, 2, 5, matrix.Color333(7, 0, 0));
 	matrix.fillRect(x+21, y, 2, 7, matrix.Color333(7, 0, 0));
 }
@@ -107,7 +157,6 @@ void difficon(int x, int y) {
 void clear(void) {
 	matrix.fillRect(0, 0, 32, 16, matrix.Color333(0, 0, 0));
 }
-/*
 void printGrid(int board[10][10], int x, int y, int size) {
 	drawRect(x-1, y-1, size+2, size+2, matrix.Color333(7, 7, 7));
 	for (int i = 0; i < size; i++) {
@@ -125,4 +174,4 @@ void printGrid(int board[10][10], int x, int y, int size) {
 		}
 	}
 }
-*/
+
