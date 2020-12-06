@@ -10,7 +10,7 @@
 // #define Max_Size 10
 
 /* The game board is a set of integers (represented by chars to save memory). Each of these integers has a certain meaning:
-255 = Outside of game boundaries
+5 = Outside of game boundaries
 0  = Empty water
 2  = Current position of ship
 4  = Overlapping ships (only used when placing ship, should not be present when playing the game)
@@ -27,11 +27,11 @@ struct AIMedium {
 void AIMediumAttack(struct AIMedium *ai, char board[Max_Size][Max_Size], int *x, int *y);
 
 void generateEmptyBoard(char board[Max_Size][Max_Size], int size) {
-	//Sets all values in board to 0, outside board to 255
+	//Sets all values in board to 0, outside board to 5
 	for(int i=0; i<Max_Size; i++) {
 		for(int j=0; j<Max_Size; j++) {
 			if(i<size && j<size) board[i][j] = 0;
-			else board[i][j] = 255;
+			else board[i][j] = 5;
 		}
 	}
 }
@@ -44,9 +44,9 @@ void printBoard(char board[Max_Size][Max_Size], bool arduino) {
 		return;
 	}*/
 	for(int i=0; i<Max_Size; i++) {
-		if(board[i][0] == 255) break;  // Ends loop if outside bounds of board
+		if(board[i][0] == 5) break;  // Ends loop if outside bounds of board
     for(int j=0; j<Max_Size; j++) {
-			if(board[i][j] == 255) break;  // Moves to next line if outside bounds of board
+			if(board[i][j] == 5) break;  // Moves to next line if outside bounds of board
 			if (board[i][j] == 1) printf("%d ", 0);  // Displays enemy's misses as ocean
 			else printf("%d ", board[i][j]);
 		}
@@ -58,9 +58,9 @@ void printBoard(char board[Max_Size][Max_Size], bool arduino) {
 // Prints a board that only shows hit or miss targets
 void printOpponentBoard(char board[Max_Size][Max_Size]) {
 	for(int i=0; i<Max_Size; i++) {
-		if(board[i][0] == 255) break;  // Ends loop if outside bounds of board
+		if(board[i][0] == 5) break;  // Ends loop if outside bounds of board
     for(int j=0; j<Max_Size; j++) {
-			if(board[i][j] == 255) break;  // Moves to next line if outside bounds of board
+			if(board[i][j] == 5) break;  // Moves to next line if outside bounds of board
 			if ((board[i][j]!= 1) && (board[i][j]!= 3)) printf("%d ", 0);  // Prints everything other than hit or miss as ocean
 			else printf("%d ", board[i][j]);
 		}
@@ -565,7 +565,7 @@ int main(void) {
 
 
 	struct AIMedium ai = createMediumAI(bsize, dif-1);
-	printf("Size of(AIMedium) = %d %d\n", sizeof(struct AIMedium), sizeof(struct AIMedium *));
+	printf("Size of(AIMedium) = %lu %lu\n", sizeof(struct AIMedium), sizeof(struct AIMedium *));
 
 	// int testBoard[Max_Size][Max_Size]; //Board for testing random ship placement
 	// generateEmptyBoard(testBoard, bsize);
