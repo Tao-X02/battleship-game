@@ -18,15 +18,15 @@ char getButtonPress();
 
 /*MENU LAYOUT*/
 
-int mainmenu(RGBmatrixPanel matrix); //returns gamemode
+void mainmenu(RGBmatrixPanel matrix, int arr[]); //returns gamemode and colorscheme
 				//0 for exit
 				//1 for pvp
 				//2 for easy AI
 				//3 for hard AI
-int gamemode(RGBmatrixPanel matrix);
-int difficulty(RGBmatrixPanel matrix);
-//void gamescreen(int p1[10][10], int p2[10][10]);
+void gamemode(RGBmatrixPanel matrix, int arr[]);
+void difficulty(RGBmatrixPanel matrix, int arr[]);
 void settings(RGBmatrixPanel matrix);
+void colorscheme(RGBmatrixPanel matrix, int arr[]);
 void help(RGBmatrixPanel matrix);//how to play
 
 /*DISPLAYS*/
@@ -37,9 +37,10 @@ void settingsicon(int x, int y, RGBmatrixPanel matrix);
 void playicon(int x, int y, RGBmatrixPanel matrix);
 void pvpicon(int x, int y, RGBmatrixPanel matrix);
 void pvcicon(int x, int y, RGBmatrixPanel matrix);
-//void printGrid(int board[10][10], int x, int y);
-	//for player 1's board, enter (3, 3) for (x, y)
-	//for player 2's board(or comp), enter (18, 3)
+void colorsicon(int x, int y, RGBmatrixPanel matrix);
+void soundicon(int x, int y, RGBmatrixPanel matrix);
+void outline(int x, int y, RGBmatrixPanel matrix);
+void scheme(int x, int y, RGBmatrixPanel matrix);
 void difficon(int x, int y, RGBmatrixPanel matrix);
 
 #endif

@@ -9,7 +9,7 @@
 	2 - easy AI
 	3 - hard AI
 */
-int mainmenu(RGBmatrixPanel matrix) {
+void mainmenu(RGBmatrixPanel matrix, int arr[]) {
 	clear(matrix);
 	exiticon(0, 0, matrix);
 	playicon(11, 1, matrix);
@@ -20,22 +20,22 @@ int mainmenu(RGBmatrixPanel matrix) {
 
 	do {
 		button = getButtonPress();
-	} while (!(button == 'x' || button == 'd' /*|| button == 'r' || button == 's'*/));
+	} while (!(button == 'x' || button == 'd' /*|| button == 'r'*/ || button == 's'));
 
 	switch(button) {
 		case 'x'://exit
-			return 0;
+			arr[0] = 0;
 		case 'd'://play
-			return gamemode(matrix);
+			gamemode(matrix, arr);
 		/*case 'r'://tutorial
 			//tutorial();
-			break;
+			break;*/
 		case 's'://settings
-			//settings();*/
+			settings();
 	}
 }
 
-int gamemode(RGBmatrixPanel matrix) {
+void gamemode(RGBmatrixPanel matrix, int arr[]) {
 	clear(matrix);
 	exiticon(0, 0, matrix);
 	pvpicon(9, 6, matrix);
@@ -47,42 +47,85 @@ int gamemode(RGBmatrixPanel matrix) {
 
 	switch(button) {
 		case 'x'://back to main menu
-			return mainmenu(matrix);
+			mainmenu(matrix, arr);
 		case 'd'://PvC
-			return difficulty(matrix);
+			difficulty(matrix, arr);
 		case 's'://PvP
-			return 1;
+			arr[0] = 1;
 	}
 }
 
-int difficulty(RGBmatrixPanel matrix) {
+void difficulty(RGBmatrixPanel matrix, int arr[]) {
 	clear(matrix);
 	exiticon(0, 0, matrix);
 	difficon(5, 4, matrix);
 	char button;
 	do {
 		button = getButtonPress();
-	} while (!(button == 'x' || button == 'd' || button == 's'));
+	} while (!(button == 'x' || button == 'd' /*|| button == 'r'*/ || button == 's'));
 
 	switch(button) {
 		case 'x'://back to gamemode
-			return gamemode(matrix);
+			gamemode(matrix, arr);
 		case 'd'://hard
-			return 3;
+			arr[0] = 3;
+		//case 'r'://medium
+			//arr[0] = 3;
 		case 's'://easy
-			return 2;
+			arr[0] = 2;
 	}
 }
 
-/* This has already been done in the .ino file
-void gamescreen(int p1[10][10], int p2[10][10]){
-	clear();
-	exiticon(0, 0);
-	printGrid(p1, 3, 3);
-	printGrid(p2, 18, 3);
-}*/
 //void tutorial();
-//void settings();
+void settings(RGBmatrixPanel matrix, int arr[]) {
+	clear(matrix);
+	exiticon(0, 0, matrix);
+	colorsicon(6, 5, matrix);
+	soundicon(17, 7, matrix);
+
+	char button;
+
+	do {
+		button = getButtonPress();
+	} while (!(button == 'x' || button == 'r' /*|| button == 's'*/));
+
+	switch(button) {
+		case 'x'://exit
+			mainmenu(matrix, arr);
+		case 'r'://colors
+			colorscheme(matrix, arr);
+		//case 's'://sound
+			//sounds
+	}
+}
+
+void colorscheme(RGBmatrixPanel matrix, int arr[]) {
+	clear(matrix);
+	exiticon(0, 0, matrix);
+	schemeicon(6, 5, matrix, defaultScheme);//default
+	schemeicon(14, 5, matrix, scheme1);
+	schemeicon(22, 5, matrix, scheme2);
+
+	char button = getButtonPress();
+
+	while (button != 'x') {
+		switch(button) {
+			case 'x'://exit
+				settings(matrix, arr);
+			case 'd'://default scheme
+				outline(5, 4, matrix);
+				arr[1] = 0;
+			case 'r':
+				arr[1] = 1;
+				outline(13, 4, matrix);
+			case 's':
+				arr[1] = 2;
+				outline(21, 4, matrix);
+		}
+
+		if (button != 'x') button = getButtonPress();
+	}
+}
 
 /*Button Displays*/
 void exiticon(int x, int y, RGBmatrixPanel matrix) {
@@ -137,8 +180,8 @@ void pvpicon(int x, int y, RGBmatrixPanel matrix) {
 void pvcicon(int x, int y, RGBmatrixPanel matrix) {
 	matrix.fillCircle(x, y, 2, matrix.Color333(0, 0, 7));
 	matrix.drawPixel(x-1, y, matrix.Color333(0, 0, 0));
-	matrix.drawLine(x-2, y-3, x+2, y-3, matrix.Color333(0, 0, 7));
-	matrix.fillRect(x-3, y-4, 7, 2, matrix.Color333(0, 0, 7));
+	matrix.drawLine(x-2, y+3, x+2, y+3, matrix.Color333(0, 0, 7));
+	matrix.fillRect(x-3, y+4, 7, 2, matrix.Color333(0, 0, 7));
 
 	matrix.drawRect(x, y-2, 6, 5, matrix.Color333(7, 0, 0));
 	matrix.drawRect(x+1, y-1, 4, 3, matrix.Color333(0, 0, 0));
@@ -149,33 +192,53 @@ void pvcicon(int x, int y, RGBmatrixPanel matrix) {
 void difficon(int x, int y, RGBmatrixPanel matrix) {
 	matrix.fillRect(x, y+4, 2, 3, matrix.Color333(0, 7, 0));//easy
 
-	//matrix.fillRect(x+6, y+4, 2, 3, matrix.Color333(7, 7, 0));//medium
-	//matrix.fillRect(x+9, y+2, 2, 5, matrix.Color333(7, 7, 0));
+	matrix.fillRect(x+6, y+4, 2, 3, matrix.Color333(7, 7, 0));//medium
+	matrix.fillRect(x+9, y+2, 2, 5, matrix.Color333(7, 7, 0));
 
 	matrix.fillRect(x+15, y+4, 2, 3, matrix.Color333(7, 0, 0));//hard
 	matrix.fillRect(x+18, y+2, 2, 5, matrix.Color333(7, 0, 0));
 	matrix.fillRect(x+21, y, 2, 7, matrix.Color333(7, 0, 0));
 }
 
+void colorsicon(int x, int y, RGBmatrixPanel matrix) {
+	matrix.drawPixel(x, y, matrix.Color333(7, 0, 0));
+	matrix.drawLine(x, y+1, x+1, y, matrix.Color333(7, 4, 0));
+	matrix.drawLine(x, y+2, x+2, y, matrix.Color333(7, 7, 0));
+	matrix.drawLine(x, y+3, x+3, y, matrix.Color333(4, 7, 0));
+	matrix.drawLine(x, y+4, x+4, y, matrix.Color333(0, 7, 0));
+	matrix.drawLine(x, y+5, x+5, y, matrix.Color333(0, 7, 4));
+	matrix.drawLine(x+1, y+5, x+5, y+1, matrix.Color333(0, 7, 7));
+	matrix.drawLine(x+2, y+5, x+5, y+2, matrix.Color333(0, 4, 7));
+	matrix.drawLine(x+3, y+5, x+5, y+3, matrix.Color333(0, 0, 7));
+	matrix.drawLine(x+4, y+5, x+5, y+4, matrix.Color333(4, 0, 7));
+	matrix.drawPixel(x+5, y+5, matrix.Color333(7, 0, 7));
+}
+void soundicon(int x, int y, RGBmatrixPanel matrix) {
+	matrix.fillRect(x, y-1, 2, 3, matrix.Color333(7, 7, 7));
+	matrix.drawLine(x+2, y-2, x+2, y+2, matrix.Color333(7, 7, 7));
+	matrix.drawLine(x+3, y-3, x+3, y+3, matrix.Color333(7, 7, 7));
+
+	matrix.drawPixel(x+5, y-2, matrix.Color333(7, 7, 7));
+	matrix.drawLine(x+6, y-1, x+6, y+1, matrix.Color333(7, 7, 7));
+	matrix.drawPixel(x+5, y+2, matrix.Color333(7, 7, 7));
+
+	matrix.drawPixel(x+6, y-4, matrix.Color333(7, 7, 7));
+	matrix.drawPixel(x+7, y-3, matrix.Color333(7, 7, 7));
+	matrix.drawLine(x+8, y-2, x+8, y+2, matrix.Color333(7, 7, 7));
+	matrix.drawPixel(x+7, y+3, matrix.Color333(7, 7, 7));
+	matrix.drawPixel(x+6, y+4, matrix.Color333(7, 7, 7));
+}
+void outline(int x, int y, RGBmatrixPanel matrix) {
+	matrix.drawRect(x, y, 7, 7, matrix.Color333(7, 7, 7));
+}
+void schemeicon(int x, int y, RGBmatrixPanel matrix, struct colorScheme scheme) {
+	matrix.drawLine(x, y, x, y+4, scheme.c0);
+	matrix.drawLine(x+1, y, x+1, y+4, scheme.c1);
+	matrix.drawLine(x+2, y, x+2, y+4, scheme.c2);
+	matrix.drawLine(x+3, y, x+3, y+4, scheme.c3);
+	matrix.drawLine(x+3, y, x+3, y+4, scheme.c4);
+}
+
 void clear(RGBmatrixPanel matrix) {
 	matrix.fillRect(0, 0, 32, 16, matrix.Color333(0, 0, 0));
 }
-
-/* Already done in .ino file
-void printGrid(int board[10][10], int x, int y, int size) {
-	drawRect(x-1, y-1, size+2, size+2, matrix.Color333(7, 7, 7));
-	for (int i = 0; i < size; i++) {
-		for (int j = 0; j < size; j++) {
-			switch (board[i][j]) {
-				case 1: //miss
-					matrix.drawPixel(x+i, y+j, matrix.Color333(7, 0, 0));//red
-				case 2://player's ships
-					matrix.drawPixel(x+i, y+j, matrix.Color333(0, 0, 7));//blue
-				case 3://hit
-					matrix.drawPixel(x+i, y+j, matrix.Color333(0, 7, 0));//green
-				default://empty water
-					matrix.drawPixel(x+i, y+j, matrix.Color333(0, 0, 0));
-			}
-		}
-	}
-}*/
