@@ -1,6 +1,7 @@
 #ifndef MENUS_H
 #define MENUS_H
 
+#include <RGBmatrixPanel.h>
 /*
 This will mostly just be designing the
 look of the game on the LED display
@@ -12,6 +13,8 @@ and the printing the words on the LCD
 struct color {
 	int r, g, b;
 };*/
+
+char getButtonPress();
 
 /*MENU LAYOUT*/
 
@@ -27,7 +30,7 @@ void settings(RGBmatrixPanel matrix);
 void help(RGBmatrixPanel matrix);//how to play
 
 /*DISPLAYS*/
-void clear(void, RGBmatrixPanel matrix);
+void clear(RGBmatrixPanel matrix);
 void exiticon(int x, int y, RGBmatrixPanel matrix);
 void helpicon(int x, int y, RGBmatrixPanel matrix);
 void settingsicon(int x, int y, RGBmatrixPanel matrix);

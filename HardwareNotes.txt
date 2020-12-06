@@ -2,11 +2,18 @@ Some notes for the hardware side:
 (note: these are mostly just for my own use -Jaswin)
 
 Buttons (from top to bottom) correspond to the pins:
-10 - X
-9  - R
-8  - W
-7  - S
+7 - X
+5  - R
+3  - S
+2  - D
 
-When pressed, digital read will be LOW
+When pressed, digital read will be LOW (circuit is grounded)
 
-For power adapter, tape is positive and white is negative
+bshipArduino.ino as well as any files it imports code from must be in a folder
+called "bshipArduino" for it to work properly
+
+A lot of the code in bshipArduino.ino is the same as the code in battleship.c
+The only difference is that unnecessary code, such as print statements, as well
+as unnecessary libraries, like stdio, have been removed to reduce memory usage.
+Most strings within bshipArduino.ino are within the F() wrapper, which allows them
+to be saved to the program memory rather than wasting RAM.
