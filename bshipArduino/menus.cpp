@@ -9,7 +9,7 @@
 	2 - easy AI
 	3 - hard AI
 */
-void mainmenu(RGBmatrixPanel matrix, int arr[]) {
+void mainmenu(RGBmatrixPanel matrix, int arr[], struct colorScheme schemes[3]) {
 	clear(matrix);
 	exiticon(0, 0, matrix);
 	playicon(11, 1, matrix);
@@ -25,17 +25,20 @@ void mainmenu(RGBmatrixPanel matrix, int arr[]) {
 	switch(button) {
 		case 'x'://exit
 			arr[0] = 0;
+      return;
 		case 'd'://play
-			gamemode(matrix, arr);
+			gamemode(matrix, arr, schemes);
+      break;
 		/*case 'r'://tutorial
 			//tutorial();
 			break;*/
 		case 's'://settings
-			settings();
+			settings(matrix, arr, schemes);
+      break;
 	}
 }
 
-void gamemode(RGBmatrixPanel matrix, int arr[]) {
+void gamemode(RGBmatrixPanel matrix, int arr[], struct colorScheme schemes[3]) {
 	clear(matrix);
 	exiticon(0, 0, matrix);
 	pvpicon(9, 6, matrix);
@@ -47,15 +50,16 @@ void gamemode(RGBmatrixPanel matrix, int arr[]) {
 
 	switch(button) {
 		case 'x'://back to main menu
-			mainmenu(matrix, arr);
+      return;
+			//mainmenu(matrix, arr, schemes);
 		case 'd'://PvC
-			difficulty(matrix, arr);
+			difficulty(matrix, arr, schemes);
 		case 's'://PvP
 			arr[0] = 1;
 	}
 }
 
-void difficulty(RGBmatrixPanel matrix, int arr[]) {
+void difficulty(RGBmatrixPanel matrix, int arr[], struct colorScheme schemes[3]) {
 	clear(matrix);
 	exiticon(0, 0, matrix);
 	difficon(5, 4, matrix);
@@ -66,7 +70,7 @@ void difficulty(RGBmatrixPanel matrix, int arr[]) {
 
 	switch(button) {
 		case 'x'://back to gamemode
-			gamemode(matrix, arr);
+			gamemode(matrix, arr, schemes);
 		case 'd'://hard
 			arr[0] = 3;
 		//case 'r'://medium
@@ -77,7 +81,7 @@ void difficulty(RGBmatrixPanel matrix, int arr[]) {
 }
 
 //void tutorial();
-void settings(RGBmatrixPanel matrix, int arr[]) {
+void settings(RGBmatrixPanel matrix, int arr[], struct colorScheme schemes[3]) {
 	clear(matrix);
 	exiticon(0, 0, matrix);
 	colorsicon(6, 5, matrix);
@@ -91,39 +95,67 @@ void settings(RGBmatrixPanel matrix, int arr[]) {
 
 	switch(button) {
 		case 'x'://exit
-			mainmenu(matrix, arr);
+      return;
+			//mainmenu(matrix, arr, schemes);
+      //break;
 		case 'r'://colors
-			colorscheme(matrix, arr);
+			colorscheme(matrix, arr, schemes);
+      break;
 		//case 's'://sound
 			//sounds
 	}
 }
 
-void colorscheme(RGBmatrixPanel matrix, int arr[]) {
-	clear(matrix);
-	exiticon(0, 0, matrix);
-	schemeicon(6, 5, matrix, defaultScheme);//default
-	schemeicon(14, 5, matrix, scheme1);
-	schemeicon(22, 5, matrix, scheme2);
+void drawscheme(RGBmatrixPanel matrix, int arr[], struct colorScheme schemes[3], int xPos, int yPos) {
+  clear(matrix);
+  exiticon(0, 0, matrix);
+  schemeicon(6, 5, matrix, schemes[0]);//default
+  schemeicon(14, 5, matrix, schemes[1]);
+  schemeicon(22, 5, matrix, schemes[2]);
+  outline(xPos, yPos, matrix);
+}
 
-	char button = getButtonPress();
+void colorscheme(RGBmatrixPanel matrix, int arr[], struct colorScheme schemes[3]) {
+	/*clear(matrix);
+  exiticon(0, 0, matrix);
+  schemeicon(6, 5, matrix, schemes[0]);//default
+  schemeicon(14, 5, matrix, schemes[1]);
+  schemeicon(22, 5, matrix, schemes[2]);*/
+	char button;
+  switch(arr[1]) {
+    case 0:
+      button = 'd';
+      break;
+    case 1:
+      button = 's';
+      break;
+    case 2:
+      button = 'r';
+      break;
+  }
 
 	while (button != 'x') {
 		switch(button) {
 			case 'x'://exit
-				settings(matrix, arr);
+				settings(matrix, arr, schemes);
+        break;
 			case 'd'://default scheme
-				outline(5, 4, matrix);
+        drawscheme(matrix, arr, schemes, 5, 4);
+				//outline(5, 4, matrix);
 				arr[1] = 0;
-			case 'r':
-				arr[1] = 1;
-				outline(13, 4, matrix);
+        break;
 			case 's':
+				arr[1] = 1;
+				drawscheme(matrix, arr, schemes, 13, 4);
+				//outline(13, 4, matrix);
+        break;
+			case 'r':
 				arr[1] = 2;
-				outline(21, 4, matrix);
+        drawscheme(matrix, arr, schemes, 21, 4);
+				//outline(21, 4, matrix);
+        break;
 		}
-
-		if (button != 'x') button = getButtonPress();
+    button = getButtonPress();
 	}
 }
 

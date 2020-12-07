@@ -38,20 +38,22 @@ RGBmatrixPanel matrix(A, B, C, CLK, LAT, OE, false);
 3  = Hit
 */
 
-struct colorScheme {
+/*struct colorScheme {
   uint16_t c0, c1, c2, c3, c4;
-};
+};*/
 
 // Defines some colors for later use
 uint16_t red = matrix.Color333(255, 0, 0);
 uint16_t black = matrix.Color333(0, 0, 0);
 uint16_t white = matrix.Color333(255, 255, 255);
 uint16_t green = matrix.Color333(0, 255, 0);
-// uint16_t blue = matrix.Color333(0, 0, 255);
+uint16_t blue = matrix.Color333(0, 0, 255);
 uint16_t yellow = matrix.Color333(255, 255, 0);
 
 struct colorScheme defaultScheme = {black, white, green, red, yellow};
-// Add extra color schemes here
+struct colorScheme scheme2 = {black, blue, white, green, red};
+struct colorScheme scheme3 = {black, red, yellow, blue, green};
+struct colorScheme schemes[3] = {defaultScheme, scheme2, scheme3};
 struct colorScheme currentScheme = defaultScheme;
 
 // Converts button press to character for use in other programs,
@@ -418,7 +420,7 @@ bool playerTurn (char board1[Max_Size][Max_Size], char board2[Max_Size][Max_Size
     // scanf("%d", &y);
     // if (x > bsize || y > bsize)
     //     printf("Out of bound inputs\n");
-    
+
     return checkPosition(board2, ++x, ++y, bsize); //Play until target missed
 }
 
@@ -624,11 +626,15 @@ void loop() {
   */
 
   //Using menu input
-  int bsize = 5;
+  int bsize = 10;
   int mode = 0;
   int dif;
+  int arr[2] = {0, 0};
   while(mode == 0) {
-    switch(mainmenu(matrix)) {  // Run main menu and get instructions to setup
+    mainmenu(matrix, arr, schemes); // Run main menu and get instructions to setup
+    switch(arr[0]) {
+      case 0:
+        break;
       case 1:
         mode = 1;
         dif = 0;
@@ -642,6 +648,7 @@ void loop() {
         dif = 2;
         break;
     }
+    currentScheme = schemes[arr[1]];
   }
 
   // Print out values entered
@@ -676,59 +683,3 @@ void loop() {
   }
 	gameAI(board, board2, bsize, mode, &ai); //Main game function
 }
-
-/*
-int main(void) {
-	srand( time(NULL) ); //seed random with time. Otherwise the sequences are always the same
-	int bsize;  // Board size (board is always square)
-	int mode;
-	while(true) {
-		printf("Please choose gamemode:\nMultiplayer (input 1)\nAI (input 2)\n");
-		if(scanf("%d", &mode) != 1 || (mode != 1 && mode != 2)) printf("Invalid input\n");
-		else break;
-	}
-	// Board size must be at least 5 to fit aircraft carrier and less than Max_Size to fit on LED board
-	while(true) {
-		printf("Input board width between 5 and %d (board will be a square)\n", Max_Size);
-		if(scanf("%d", &bsize) != 1 || (bsize<5 || bsize>Max_Size)) printf("Invalid input\n");
-		else break;
-	}
-
-	int dif;
-	if (mode == 2) {
-		while(true) {
-			printf("Please choose AI difficulty:\nEasy (input 1)\nHard (input 2)\n");
-			if(scanf("%d", &dif) != 1 || (dif != 1 && dif != 2)) printf("Invalid input\n");
-			else break;
-		}
-	}
-	printf("dif: %d\n", dif);
-	// Board is array with size Max_Size, values outside bsize are -1, this is to avoid variable sized arrays
-	char board[Max_Size][Max_Size];
-	char board2[Max_Size][Max_Size]; //Second set of board
-
-	// Initialize object to store AI data
-
-
-	struct AIMedium ai = createMediumAI(bsize, dif-1);
-	printf("Size of(AIMedium) = %d %d\n", sizeof(struct AIMedium), sizeof(struct AIMedium *));
-
-	// int testBoard[Max_Size][Max_Size]; //Board for testing random ship placement
-	// generateEmptyBoard(testBoard, bsize);
-	// placeRandomShipsAI(testBoard, bsize);
-
-	generateEmptyBoard(board, bsize);
-	generateEmptyBoard(board2, bsize); //Second set of board
-	if(mode == 1){
-		printf("Placing Player 1's Board\n");
-        placeAllShips(board, bsize, false);
-		printf("Placing Player 2's Board\n");
-        placeAllShips(board2, bsize, false);
-    }
-    else if (mode == 2){
-        placeAllShips(board, bsize, false);
-        placeRandomShipsAI(board2, bsize);
-    }
-	gameAI(board, board2, bsize, mode, &ai); //Main game function
-	return 0;
-}*/

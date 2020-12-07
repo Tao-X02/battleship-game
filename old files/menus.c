@@ -9,7 +9,7 @@
 	2 - easy AI
 	3 - hard AI
 */
-void mainmenu(RGBmatrixPanel matrix, int arr[]) {
+void mainmenu(RGBmatrixPanel matrix, int arr[], struct colorScheme schemes[3]) {
 	clear(matrix);
 	exiticon(0, 0, matrix);
 	playicon(11, 1, matrix);
@@ -31,7 +31,7 @@ void mainmenu(RGBmatrixPanel matrix, int arr[]) {
 			//tutorial();
 			break;*/
 		case 's'://settings
-			settings();
+			settings(matrix, arr, schemes);
 	}
 }
 
@@ -77,7 +77,7 @@ void difficulty(RGBmatrixPanel matrix, int arr[]) {
 }
 
 //void tutorial();
-void settings(RGBmatrixPanel matrix, int arr[]) {
+void settings(RGBmatrixPanel matrix, int arr[], struct colorScheme schemes[3]) {
 	clear(matrix);
 	exiticon(0, 0, matrix);
 	colorsicon(6, 5, matrix);
@@ -93,25 +93,25 @@ void settings(RGBmatrixPanel matrix, int arr[]) {
 		case 'x'://exit
 			mainmenu(matrix, arr);
 		case 'r'://colors
-			colorscheme(matrix, arr);
+			colorscheme(matrix, arr, schemes);
 		//case 's'://sound
 			//sounds
 	}
 }
 
-void colorscheme(RGBmatrixPanel matrix, int arr[]) {
+void colorscheme(RGBmatrixPanel matrix, int arr[], struct colorScheme schemes[3]) {
 	clear(matrix);
 	exiticon(0, 0, matrix);
-	schemeicon(6, 5, matrix, defaultScheme);//default
-	schemeicon(14, 5, matrix, scheme1);
-	schemeicon(22, 5, matrix, scheme2);
+	schemeicon(6, 5, matrix, schemes[0]);//default
+	schemeicon(14, 5, matrix, schemes[1]);
+	schemeicon(22, 5, matrix, schemes[2]);
 
 	char button = getButtonPress();
 
 	while (button != 'x') {
 		switch(button) {
 			case 'x'://exit
-				settings(matrix, arr);
+				settings(matrix, arr, schemes);
 			case 'd'://default scheme
 				outline(5, 4, matrix);
 				arr[1] = 0;
